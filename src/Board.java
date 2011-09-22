@@ -54,13 +54,11 @@ public class Board {
 
 	}
 
-	public void doMove(Direction dir) {
-	}
-
 	public Direction[] findPossibleMoves() {
 		return null;
 	}
 
+<<<<<<< HEAD
 	public void write(){
 		for (int i = 0; i < cells.length; i++) {
 			if(cells[i] == null)
@@ -85,6 +83,36 @@ public class Board {
 			break;
 		case RIGHT:
 			break;
+=======
+	/**
+	 * Returns true if the cell at the specified position is empty,
+	 * and a valid target for movement.
+	 */
+	public boolean isEmptyCell(int pos) {
+		if (pos < 0 || pos >= cells.length)
+			return false;
+		Symbol c = cells[pos];
+		if (c == Symbol.WALL || c == Symbol.BOX)
+			return false;
+
+		return true;
+	}
+
+	/**
+	 * Returns true if an object (player or box) can be moved from a
+	 * position towards a specified direction.
+	 */
+	public boolean canMove(int pos, Direction dir) {
+		switch (dir) {
+			case UP:
+				return isEmptyCell(pos - this.width);
+			case DOWN:
+				return isEmptyCell(pos + this.width);
+			case LEFT:
+				return isEmptyCell(pos - 1);
+			case RIGHT:
+				return isEmptyCell(pos + 1);
+>>>>>>> deb3f21a2b6b6f3cd3ca4903088df86f77d80f9e
 		}
 		return false;
 	}
