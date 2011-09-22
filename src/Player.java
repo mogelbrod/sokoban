@@ -3,6 +3,8 @@ import java.util.Stack;
 import java.util.Vector;
 
 public class Player {
+
+	private Rules MASTER_CONTROL_TOWER = new Rules();
 	private Stack<Board> stack = new Stack<Board>();
 	private HashSet<Integer> visited = new HashSet<Integer>();
 
@@ -24,11 +26,14 @@ public class Player {
 			if (moves.size() != 0) {
 				for (Direction d : moves) {
 					Board nextBoard = new Board(currentState, d);
-					if(!visited(nextBoard.cells.hashCode())){
-						nextBoard.addDirectionToPath(d);
-						stack.push(nextBoard);
-						System.out.println(stack.size());
+					if(MASTER_CONTROL_TOWER.check(nextBoard.cells, nextBoard.getWidth())){
+						if(!visited(nextBoard.cells.hashCode())){
+							nextBoard.addDirectionToPath(d);
+							stack.push(nextBoard);
+							System.out.println(stack.size());
+						}	
 					}
+
 				}
 			} else {
 				stack.pop();
@@ -38,7 +43,7 @@ public class Player {
 		return null;
 	}
 
-	
+
 	/*
 	 * Checks if a state has been visited before.
 	 * @param: hashCode of Board.cells.hashCode()
@@ -52,7 +57,7 @@ public class Player {
 		else
 			return true;
 	}
-	
+
 	//	Push the root node onto a stack.
 	//	Pop a node from the stack and examine it.
 	//	If the element sought is found in this node, quit the search and return a result.
