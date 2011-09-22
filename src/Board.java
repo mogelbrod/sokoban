@@ -11,11 +11,11 @@ public class Board {
 	// Current player position
 	protected int playerPos;
 
-	Board(String boardRep, int height, int width){
+	Board(String boardRep, int width, int height) {
 		this.width = width;
 		this.height = height;
-		cells = new Symbol[height*width];
-		
+		cells = new Symbol[width*height];
+
 		int rowMul = 0;
 		for (String row : boardRep.split("\n")) {
 			for (int i = 0; i < row.length(); i++) {
@@ -25,10 +25,28 @@ public class Board {
 		}
 	}
 
-	Board(Board board, Direction dir, int height, int width) {
+	Board(Symbol[] cells, int width, int height) {
+		this.cells = cells;
 		this.width = width;
 		this.height = height;
+	}
 
+	public Board move(Direction dir) {
+		Board board = new Board(cells.clone(), width, height);
+		// TODO: Do move
+		return board;
+	}
+
+	public int getWidth() {
+		return this.width;
+	}
+
+	public int getHeight() {
+		return this.height;
+	}
+
+	public Symbol[] getCells() {
+		return this.cells;
 	}
 
 	/**

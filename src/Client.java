@@ -21,13 +21,12 @@ public class Client {
             String lLine = lIn.readLine();
 
             //read number of rows
-            int lNumRows = Integer.parseInt(lLine);
+            int height = Integer.parseInt(lLine);
             int width = 0;
             StringBuilder sb = new StringBuilder();
-            
-            
+
             //read each row
-            for(int i = 0; i < lNumRows; i++) {
+            for(int i = 0; i < height; i++) {
             	lLine = lIn.readLine();
             	if(lLine != null){
                     if(lLine.length() > width)
@@ -39,7 +38,7 @@ public class Client {
 						// remove trailing newline
             sb.deleteCharAt(sb.length()-1);
 
-            Board board = new Board(sb.toString(), lNumRows, width);
+            Board board = new Board(sb.toString(), width, height);
             board.write();
             //now, we should find a solution to the sokoban
 
