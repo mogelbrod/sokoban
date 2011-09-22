@@ -13,9 +13,10 @@ public class Board {
 		this.width = width;
 		this.height = height;
 		cells = new Symbol[height*width];
-		
-		String[] rep = boardRep.split("|");
+		Symbol tmp;
+		String[] rep = boardRep.split("a");
 		for (int j = 0; j < rep.length; j++){
+			System.out.println(rep[j]);
 			for (int i = 0; i < rep[j].length()-1; i++) {
 				switch (rep[j].charAt(i)) {
 				case '#':
@@ -58,32 +59,16 @@ public class Board {
 		return null;
 	}
 
-<<<<<<< HEAD
 	public void write(){
 		for (int i = 0; i < cells.length; i++) {
-			if(cells[i] == null)
-				System.out.print(".");
+			if(cells[i] != null)
+				System.out.print(cells[i].name());
 			if(i%width == 0)
 				System.out.println();
 		}
 
 	}
 
-	// Returns true if an object (player or box) can be moved from a
-	// position towards a specified direction.
-	private boolean canMove(int pos, Direction dir) {
-		switch (dir) {
-		case UP:
-			pos -= this.width;
-			if (pos < 0) return false;
-			break;
-		case DOWN:
-			break;
-		case LEFT:
-			break;
-		case RIGHT:
-			break;
-=======
 	/**
 	 * Returns true if the cell at the specified position is empty,
 	 * and a valid target for movement.
@@ -112,7 +97,6 @@ public class Board {
 				return isEmptyCell(pos - 1);
 			case RIGHT:
 				return isEmptyCell(pos + 1);
->>>>>>> deb3f21a2b6b6f3cd3ca4903088df86f77d80f9e
 		}
 		return false;
 	}
