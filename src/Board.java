@@ -48,12 +48,16 @@ public class Board {
 		switch (dir) {
 			case UP:
 				path += "U";
+				break;
 			case DOWN:
 				path += "D";
+				break;
 			case LEFT:
 				path += "L";
+				break;
 			case RIGHT:
 				path += "R";
+				break;
 		}
 	}
 	
@@ -66,21 +70,25 @@ public class Board {
 			playerPos -= width;
 			maybeBoxPos = playerPos - width;
 //			System.out.print(" to " + playerPos);
+			break;
 		case DOWN:
 //			System.out.print("\nMove player from " + playerPos);
 			playerPos += width;
 			maybeBoxPos = playerPos + width;
 //			System.out.print(" to " + playerPos);
+			break;
 		case LEFT:
 //			System.out.print("\nMove player from " + playerPos);
 			playerPos--;
 			maybeBoxPos = playerPos - 1;
 //			System.out.print(" to " + playerPos);
+			break;
 		case RIGHT:
 //			System.out.print("\nMove player from " + playerPos);
 			playerPos++;
 			maybeBoxPos = playerPos + 1;
 //			System.out.print(" to " + playerPos);
+			break;
 		}
 		
 		if (cells[playerPos] == Symbol.BOX)
@@ -133,8 +141,10 @@ public class Board {
 	public Vector<Direction> findPossibleMoves() {
 		Vector<Direction> moves = new Vector<Direction>(4);
 		for (Direction dir : Direction.values()) {
-			Symbol to = at(playerPos, dir);
-			if (to == Symbol.FLOOR || to == Symbol.GOAL)
+			int to = translatePos(playerPos, dir);
+			if (isEmptyCell(to) ||
+					(at(to) == Symbol.BOX &&
+					isEmptyCell(translatePos(to, dir))))
 				moves.add(dir);
 		}
 		return moves;
@@ -146,9 +156,9 @@ public class Board {
 	 */
 	public boolean isEmptyCell(int pos) {
 		Symbol c = at(pos);
-		if (c == Symbol.WALL || c == Symbol.BOX)
-			return false;
-		return true;
+		if (c == Symbol.FLOOR || c == Symbol.GOAL)
+			return true;
+		return false;
 	}
 
 	/**
@@ -165,6 +175,7 @@ public class Board {
 		case RIGHT:
 			return (pos + 1);
 		}
+		return pos;
 	}
 
 	/**
