@@ -15,20 +15,15 @@ public class Board {
 		this.width = width;
 		this.height = height;
 
-
 		cells = new Symbol[width*height];
 
 		int rowMul = 0;
 		for (String row : boardRep.split("\n")) {
-			for (int k  = 0; k  < row.length(); k++) {
+			for (int k = 0; k < row.length(); k++)
 				cells[rowMul+k] = Symbol.fromChar(row.charAt(k));
-			}
 			rowMul += width;
-
 		}
 	}
-
-
 
 	Board(Symbol[] cells, int width, int height) {
 		this.cells = cells;
@@ -94,6 +89,7 @@ public class Board {
 			//			System.out.print(" to " + playerPos);
 			break;
 		}
+<<<<<<< HEAD
 
 
 		if (cells[playerPos] == Symbol.BOX)
@@ -165,6 +161,82 @@ public class Board {
 			return true;
 		return false;
 	}
+=======
+		if (cells[playerPos] == Symbol.BOX)
+			cells[maybeBoxPos] = Symbol.BOX;
+		cells[playerPos] = Symbol.PLAYER;
+	}
+
+	//DO FUCKING MOVE!
+	//	public Board move(Direction dir) {
+	//		Board board = new Board(cells.clone(), width, height);
+	//		// TODO: Do move
+	//		return board;
+	//	}
+
+	public int getWidth() {
+		return this.width;
+	}
+
+	public int getHeight() {
+		return this.height;
+	}
+
+	public Symbol[] getCells() {
+		return this.cells;
+	}
+
+	/**
+	 * Returns a string representation of this board.
+	 */
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i < cells.length; i++) {
+			if (i > 0 && i % width == 0) sb.append('\n');
+			sb.append(cells[i]);
+		}
+		return sb.toString();
+	}
+
+	/**
+	 * Outputs the string representation of this board to the console.
+	 */
+	public void write() {
+		System.out.println(toString());
+	}
+
+	/**
+	 * Returns a Vector instance with all possible player moves
+	 * (as Direction instances) that are valid on this board.
+	 */
+	public Vector<Direction> findPossibleMoves() {
+		Vector<Direction> moves = new Vector<Direction>(4);
+		for (Direction dir : Direction.values()) {
+			int to = translatePos(playerPos, dir);
+			switch (at(to)) {
+				case FLOOR:
+				case GOAL:
+					moves.add(dir);
+					break;
+				case BOX:
+				case BOX_GOAL:
+					if (isEmptyCell(translatePos(to, dir)))
+						moves.add(dir);
+					break;
+			}
+		}
+		return moves;
+
+	/**
+	 * Returns true if the cell at the specified position is empty,
+	 * and a valid target for movement.
+	 */
+	public boolean isEmptyCell(int pos) {
+		Symbol c = at(pos);
+		if (c == Symbol.FLOOR || c == Symbol.GOAL)
+			return true;
+		return false;
+	}
 
 	/**
 	 * Returns a position translated in a specified direction.
@@ -218,6 +290,116 @@ public class Board {
 	}
 
 
+	/**
+	 * Returns true if the object is in a corner.
+	 * @param position - current position of item
+	 * @return
+	 */
+	public boolean corner_rule(int position){
+		Symbol UP = cells[position-width];
+		Symbol DOWN = cells[position+width];
+		Symbol RIGHT = cells[position+1];
+		Symbol LEFT = cells[position-1];
 
 
+		//If a goal is at the position do that move.
+		if(cells[position] == Symbol.BOX_GOAL)
+			return false;
+>>>>>>> 76340d25953b452d3a9efdd1788e31c84b2ac9e6
+
+	/**
+	 * Returns a position translated in a specified direction.
+	 */
+	public int translatePos(int pos, Direction dir) {
+		switch (dir) {
+		case UP:
+			return (pos - this.width);
+		case DOWN:
+			return (pos + this.width);
+		case LEFT:
+			return (pos - 1);
+		case RIGHT:
+			return (pos + 1);
+		}
+		return pos;
+	}
+
+<<<<<<< HEAD
+	/**
+	 * Returns the symbol located at the specified position.
+	 */
+	public Symbol at(int pos) {
+		if (pos < 0 || pos >= cells.length)
+			return Symbol.WALL;
+		return cells[pos];
+	}
+
+	/**
+	 * Returns the symbol located in the specified direction from a position.
+	 */
+	public Symbol at(int pos, Direction dir) {
+		return at(translatePos(pos, dir));
+	}
+=======
+		/* Case
+		 * ###
+		 *  $#
+		 *   #
+		 */
+		if((UP == Symbol.WALL || UP == Symbol.BOX) && (RIGHT == Symbol.WALL || RIGHT == Symbol.BOX))
+			return true;
+
+		/*Case
+		 *   #
+		 *  $#
+		 * ### 
+		 */
+		if((DOWN == Symbol.WALL || DOWN == Symbol.BOX) && (RIGHT == Symbol.WALL || RIGHT == Symbol.BOX))
+			return true;
+>>>>>>> 76340d25953b452d3a9efdd1788e31c84b2ac9e6
+
+	/**
+	 * Returns true if thus board represents a finished game,
+	 * where  all boxes are placed on goals.
+	 */
+	public boolean isWin(){
+		for (Symbol s : cells)
+			if (s == Symbol.BOX) return false;
+				return true;
+	}
+
+<<<<<<< HEAD
+	/**
+	 * Returns true if this board represents a finished game,
+	 * where all boxes are placed on goals.
+	 */
+	public boolean isEOG() {
+		return false;
+	}
+
+
+
+
+=======
+		/*Case
+		 * #
+		 * #$
+		 * ### 
+		 */
+		if((DOWN == Symbol.WALL || DOWN == Symbol.BOX) && (LEFT == Symbol.WALL || LEFT == Symbol.BOX))
+			return true;
+
+
+		/*Case
+		 * ###
+		 * #$
+		 * # 
+		 */
+		if((LEFT == Symbol.WALL || LEFT == Symbol.BOX) && (UP == Symbol.WALL || UP == Symbol.BOX))
+			return true;
+
+
+		return false;
+	}
+>>>>>>> 76340d25953b452d3a9efdd1788e31c84b2ac9e6
 }
