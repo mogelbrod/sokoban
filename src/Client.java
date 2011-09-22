@@ -33,14 +33,12 @@ public class Client {
                     if(lLine.length() > width)
                        	width = lLine.length();
             	}
-            	sb.append(lLine);
-            	sb.append('\n');
-            	//here, we would store the row somewhere, to build our board
-                //in this demo, we just print it
-                System.out.println(lLine);
+            	sb.append(lLine).append('\n');
             }
+
+						// remove trailing newline
             sb.deleteCharAt(sb.length()-1);
-            //System.out.println(sb.toString());
+
             Board board = new Board(sb.toString(), lNumRows, width);
             board.write();
             //now, we should find a solution to the sokoban
