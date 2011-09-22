@@ -21,27 +21,32 @@ public class Client {
             String lLine = lIn.readLine();
 
             //read number of rows
-            int lNumRows = Integer.parseInt(lLine);
+            int height = Integer.parseInt(lLine);
             int width = 0;
             StringBuilder sb = new StringBuilder();
-            
-            
+
             //read each row
-            for(int i = 0; i < lNumRows; i++) {
+            for(int i = 0; i < height; i++) {
             	lLine = lIn.readLine();
             	if(lLine != null){
                     if(lLine.length() > width)
                        	width = lLine.length();
             	}
+<<<<<<< HEAD
             	sb.append(lLine);
             	sb.append("a");
             	//here, we would store the row somewhere, to build our board
                 //in this demo, we just print it
                 System.out.println(lLine);
+=======
+            	sb.append(lLine).append('\n');
+>>>>>>> 4df544a6578b13105527f4a93bd936d5a1916a51
             }
+
+						// remove trailing newline
             sb.deleteCharAt(sb.length()-1);
-            //System.out.println(sb.toString());
-            Board board = new Board(sb.toString(), lNumRows, width);
+
+            Board board = new Board(sb.toString(), width, height);
             board.write();
             //now, we should find a solution to the sokoban
 
