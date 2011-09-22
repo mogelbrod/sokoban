@@ -12,9 +12,6 @@ public class Board {
 	Board(Board board, Direction dir) {
 	}
 
-	public void doMove(Direction dir) {
-	}
-
 	public Direction[] findPossibleMoves() {
 		return null;
 	}
