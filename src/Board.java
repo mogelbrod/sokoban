@@ -35,7 +35,7 @@ public class Board {
 		this.width = width;
 		this.height = height;
 	}
-	
+
 	Board(Board board, Direction dir) {
 		this.width = board.width;
 		this.height = board.height;
@@ -43,57 +43,57 @@ public class Board {
 		this.cells = board.cells;
 		updateBoard(dir);
 	}
-	
+
 	public void addDirectionToPath(Direction dir) {
 		switch (dir) {
-			case UP:
-				path += "U";
-			case DOWN:
-				path += "D";
-			case LEFT:
-				path += "L";
-			case RIGHT:
-				path += "R";
+		case UP:
+			path += "U";
+		case DOWN:
+			path += "D";
+		case LEFT:
+			path += "L";
+		case RIGHT:
+			path += "R";
 		}
 	}
-	
+
 	private void updateBoard(Direction dir) {
 		cells[playerPos] = Symbol.FLOOR;
 		int maybeBoxPos = 0;
 		switch (dir) {
 		case UP:
-//			System.out.print("\nMove player from " + playerPos);
+			//			System.out.print("\nMove player from " + playerPos);
 			playerPos -= width;
 			maybeBoxPos = playerPos - width;
-//			System.out.print(" to " + playerPos);
+			//			System.out.print(" to " + playerPos);
 		case DOWN:
-//			System.out.print("\nMove player from " + playerPos);
+			//			System.out.print("\nMove player from " + playerPos);
 			playerPos += width;
 			maybeBoxPos = playerPos + width;
-//			System.out.print(" to " + playerPos);
+			//			System.out.print(" to " + playerPos);
 		case LEFT:
-//			System.out.print("\nMove player from " + playerPos);
+			//			System.out.print("\nMove player from " + playerPos);
 			playerPos--;
 			maybeBoxPos = playerPos - 1;
-//			System.out.print(" to " + playerPos);
+			//			System.out.print(" to " + playerPos);
 		case RIGHT:
-//			System.out.print("\nMove player from " + playerPos);
+			//			System.out.print("\nMove player from " + playerPos);
 			playerPos++;
 			maybeBoxPos = playerPos + 1;
-//			System.out.print(" to " + playerPos);
+			//			System.out.print(" to " + playerPos);
 		}
-		
+
 		if (cells[playerPos] == Symbol.BOX)
 			cells[maybeBoxPos] = Symbol.BOX;
 		cells[playerPos] = Symbol.PLAYER;
 	}
-	
+
 	//DO FUCKING MOVE!
-//	public Board move(Direction dir) {
-//		Board board = new Board(cells.clone(), width, height);
-//		// TODO: Do move
-//		return board;
-//	}
+	//	public Board move(Direction dir) {
+	//		Board board = new Board(cells.clone(), width, height);
+	//		// TODO: Do move
+	//		return board;
+	//	}
 
 	public int getWidth() {
 		return this.width;
@@ -172,12 +172,76 @@ public class Board {
 	}
 
 	/**
+	 * Returns true if thus board represents a finished game,
+	 * where  all boxes are placed on goals.
+	 */
+	public boolean isWin(){
+		for (Symbol s : cells)
+			if (s == Symbol.BOX) return false;
+				return true;
+	}
+
+	/**
 	 * Returns true if this board represents a finished game,
 	 * where all boxes are placed on goals.
 	 */
 	public boolean isEOG() {
-		for (Symbol s : cells)
-			if (s == Symbol.BOX) return false;
-				return true;
+		return false;
+	}
+
+
+	/**
+	 * Returns true if the object is in a corner.
+	 * @param position - current position of item
+	 * @return
+	 */
+	public boolean corner_rule(int position){
+		Symbol UP = cells[position-width];
+		Symbol DOWN = cells[position+width];
+		Symbol RIGHT = cells[position+1];
+		Symbol LEFT = cells[position-1];
+		
+		
+		//If a goal is at the position do that move.
+		if(cells[position] == Symbol.BOX_GOAL)
+			return false;
+				
+		
+		/* Case
+		 * ###
+		 *  $#
+		 *   #
+		 */
+		if((UP == Symbol.WALL || UP == Symbol.BOX) && (RIGHT == Symbol.WALL || RIGHT == Symbol.BOX))
+			return true;
+		
+		/*Case
+		 *   #
+		 *  $#
+		 * ### 
+		 */
+		if((DOWN == Symbol.WALL || DOWN == Symbol.BOX) && (RIGHT == Symbol.WALL || RIGHT == Symbol.BOX))
+			return true;
+		
+		
+		/*Case
+		 * #
+		 * #$
+		 * ### 
+		 */
+		if((DOWN == Symbol.WALL || DOWN == Symbol.BOX) && (LEFT == Symbol.WALL || LEFT == Symbol.BOX))
+			return true;
+		
+		
+		/*Case
+		 * ###
+		 * #$
+		 * # 
+		 */
+		if((LEFT == Symbol.WALL || LEFT == Symbol.BOX) && (UP == Symbol.WALL || UP == Symbol.BOX))
+			return true;
+		
+		
+		return false;
 	}
 }
