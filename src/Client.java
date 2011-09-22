@@ -1,6 +1,7 @@
 import java.io.*;
 import java.net.*;
 import java.util.Date;
+import java.lang.StringBuilder;
 
 public class Client {
 	public static void main(String[] pArgs) {
@@ -21,15 +22,27 @@ public class Client {
 
             //read number of rows
             int lNumRows = Integer.parseInt(lLine);
-
+            int width = 0;
+            StringBuilder sb = new StringBuilder();
+            
+            
             //read each row
             for(int i = 0; i < lNumRows; i++) {
-                lLine = lIn.readLine();
-                //here, we would store the row somewhere, to build our board
+            	lLine = lIn.readLine();
+            	if(lLine != null){
+                    if(lLine.length() > width)
+                       	width = lLine.length();
+            	}
+            	sb.append(lLine);
+            	sb.append('|');
+            	//here, we would store the row somewhere, to build our board
                 //in this demo, we just print it
                 System.out.println(lLine);
             }
-
+            sb.deleteCharAt(sb.length()-1);
+            //System.out.println(sb.toString());
+            Board board = new Board(sb.toString(), lNumRows, width);
+            board.write();
             //now, we should find a solution to the sokoban
 
             //we've found our solution (this is actually the solution to board 1)
