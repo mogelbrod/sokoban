@@ -5,6 +5,7 @@ import java.util.Vector;
 public class Player {
 	private Stack<Board> stack = new Stack<Board>();
 	private HashSet<Integer> visited = new HashSet<Integer>();
+
 	Player () {
 
 	}
@@ -23,9 +24,7 @@ public class Player {
 			if (moves.size() != 0) {
 				for (Direction d : moves) {
 					Board nextBoard = new Board(currentState, d);
-					//TODO: nextBoard.hashCode(): Gšr en bra hashfunktion fšr states
-					if (!visited.contains(nextBoard.hashCode())) {
-						visited.add(nextBoard.hashCode());
+					if(!visited(nextBoard.cells.hashCode())){
 						nextBoard.addDirectionToPath(d);
 						stack.push(nextBoard);
 						System.out.println(stack.size());
@@ -39,6 +38,21 @@ public class Player {
 		return null;
 	}
 
+	
+	/*
+	 * Checks if a state has been visited before.
+	 * @param: hashCode of Board.cells.hashCode()
+	 * returns false iff not visited else true
+	 * 
+	 */
+	private boolean visited(int hashCode){
+		//.add returns true if hashCode was added (meaning hashCode haven't been added before)
+		if(visited.add(hashCode))
+			return false;
+		else
+			return true;
+	}
+	
 	//	Push the root node onto a stack.
 	//	Pop a node from the stack and examine it.
 	//	If the element sought is found in this node, quit the search and return a result.
