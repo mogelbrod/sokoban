@@ -35,12 +35,63 @@ public class Board {
 		this.width = width;
 		this.height = height;
 	}
-
-	public Board move(Direction dir) {
-		Board board = new Board(cells.clone(), width, height);
-		// TODO: Do move
-		return board;
+	
+	Board(Board board, Direction dir) {
+		this.width = board.width;
+		this.height = board.height;
+		this.path = board.path;
+		this.cells = board.cells;
+		updateBoard(dir);
 	}
+	
+	public void addDirectionToPath(Direction dir) {
+		switch (dir) {
+			case UP:
+				path += "U";
+			case DOWN:
+				path += "D";
+			case LEFT:
+				path += "L";
+			case RIGHT:
+				path += "R";
+		}
+	}
+	
+	private void updateBoard(Direction dir) {
+		cells[playerPos] = Symbol.FLOOR;
+		int maybeBoxPos = 0;
+		switch (dir) {
+		case UP:
+//			System.out.print("\nMove player from " + playerPos);
+			playerPos -= width;
+			maybeBoxPos = playerPos - width;
+//			System.out.print(" to " + playerPos);
+		case DOWN:
+//			System.out.print("\nMove player from " + playerPos);
+			playerPos += width;
+			maybeBoxPos = playerPos + width;
+//			System.out.print(" to " + playerPos);
+		case LEFT:
+//			System.out.print("\nMove player from " + playerPos);
+			playerPos--;
+			maybeBoxPos = playerPos - 1;
+//			System.out.print(" to " + playerPos);
+		case RIGHT:
+//			System.out.print("\nMove player from " + playerPos);
+			playerPos++;
+			maybeBoxPos = playerPos + 1;
+//			System.out.print(" to " + playerPos);
+		}
+		
+		if (cells[playerPos] == Symbol.BOX)
+			cells[maybeBoxPos] = Symbol.BOX;
+		cells[playerPos] = Symbol.PLAYER;
+	}
+//	public Board move(Direction dir) {
+//		Board board = new Board(cells.clone(), width, height);
+//		// TODO: Do move
+//		return board;
+//	}
 
 	public int getWidth() {
 		return this.width;
