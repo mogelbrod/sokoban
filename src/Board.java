@@ -87,6 +87,8 @@ public class Board {
 			cells[maybeBoxPos] = Symbol.BOX;
 		cells[playerPos] = Symbol.PLAYER;
 	}
+	
+	//DO FUCKING MOVE!
 //	public Board move(Direction dir) {
 //		Board board = new Board(cells.clone(), width, height);
 //		// TODO: Do move
