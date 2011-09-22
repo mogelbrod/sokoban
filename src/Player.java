@@ -9,14 +9,19 @@ public class Player {
 	Player () {
 
 	}
+	
 	public String dfs(Board startState) {
 		stack.push(startState);
 
+		Board testState = startState;
 		while (!stack.isEmpty()) {
 			Board currentState = stack.peek();
+			testState = currentState;
 
-			if (currentState.isEOG())
-				return currentState.path.toString();
+			if (currentState.isEOG()) {
+				System.out.println(currentState.path);
+				return currentState.path;
+			}
 
 			Vector<Direction> moves = currentState.findPossibleMoves();
 			System.out.println(moves.size());
@@ -27,14 +32,13 @@ public class Player {
 					if(!visited(nextBoard.cells.hashCode())){
 						nextBoard.addDirectionToPath(d);
 						stack.push(nextBoard);
-						System.out.println(stack.size());
 					}
 				}
 			} else {
 				stack.pop();
 			}
 		}
-
+		
 		return null;
 	}
 

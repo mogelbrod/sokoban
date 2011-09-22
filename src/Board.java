@@ -14,7 +14,7 @@ public class Board {
 	Board(String boardRep, int width, int height) {
 		this.width = width;
 		this.height = height;
-
+		path = "";
 
 		cells = new Symbol[width*height];
 
@@ -22,86 +22,63 @@ public class Board {
 		for (String row : boardRep.split("\n")) {
 			for (int k  = 0; k  < row.length(); k++) {
 				cells[rowMul+k] = Symbol.fromChar(row.charAt(k));
+				if (cells[rowMul+k] == Symbol.PLAYER)
+					playerPos = rowMul+k;
 			}
 			rowMul += width;
 
 		}
 	}
 
-
-
 	Board(Symbol[] cells, int width, int height) {
 		this.cells = cells;
 		this.width = width;
 		this.height = height;
 	}
-	
+
 	Board(Board board, Direction dir) {
 		this.width = board.width;
 		this.height = board.height;
 		this.path = board.path;
 		this.cells = board.cells;
+		this.playerPos = board.playerPos;
 		updateBoard(dir);
 	}
-	
+
 	public void addDirectionToPath(Direction dir) {
 		switch (dir) {
-			case UP:
-				path += "U";
-				break;
-			case DOWN:
-				path += "D";
-				break;
-			case LEFT:
-				path += "L";
-				break;
-			case RIGHT:
-				path += "R";
-				break;
+		case UP:
+			path += "U";
+			break;
+		case DOWN:
+			path += "D";
+			break;
+		case LEFT:
+			path += "L";
+			break;
+		case RIGHT:
+			path += "R";
+			break;
 		}
 	}
-	
+
 	private void updateBoard(Direction dir) {
 		cells[playerPos] = Symbol.FLOOR;
 		int maybeBoxPos = 0;
-		switch (dir) {
-		case UP:
-//			System.out.print("\nMove player from " + playerPos);
-			playerPos -= width;
-			maybeBoxPos = playerPos - width;
-//			System.out.print(" to " + playerPos);
-			break;
-		case DOWN:
-//			System.out.print("\nMove player from " + playerPos);
-			playerPos += width;
-			maybeBoxPos = playerPos + width;
-//			System.out.print(" to " + playerPos);
-			break;
-		case LEFT:
-//			System.out.print("\nMove player from " + playerPos);
-			playerPos--;
-			maybeBoxPos = playerPos - 1;
-//			System.out.print(" to " + playerPos);
-			break;
-		case RIGHT:
-//			System.out.print("\nMove player from " + playerPos);
-			playerPos++;
-			maybeBoxPos = playerPos + 1;
-//			System.out.print(" to " + playerPos);
-			break;
-		}
-		
+		playerPos = translatePos(playerPos, dir);
+		maybeBoxPos = translatePos(playerPos, dir);
+
 		if (cells[playerPos] == Symbol.BOX)
 			cells[maybeBoxPos] = Symbol.BOX;
 		cells[playerPos] = Symbol.PLAYER;
 	}
-	
+
 	//DO FUCKING MOVE!
-//	public Board move(Direction dir) {
-//		Board board = new Board(cells.clone(), width, height);
-//		// TODO: Do move
-//		return board;
-//	}
+	//	public Board move(Direction dir) {
+	//		Board board = new Board(cells.clone(), width, height);
+	//		// TODO: Do move
+	//		return board;
+	//	}
 
 	public int getWidth() {
 		return this.width;
@@ -122,7 +99,10 @@ public class Board {
 		StringBuilder sb = new StringBuilder();
 		for (int i = 0; i < cells.length; i++) {
 			if (i > 0 && i % width == 0) sb.append('\n');
-			sb.append(cells[i]);
+			if (cells[i] != null)
+				sb.append(cells[i]);
+			else
+				sb.append("#");
 		}
 		return sb.toString();
 	}
@@ -139,7 +119,9 @@ public class Board {
 	 * (as Direction instances) that are valid on this board.
 	 */
 	public Vector<Direction> findPossibleMoves() {
+		System.out.println("In findPossibleMoves()");
 		Vector<Direction> moves = new Vector<Direction>(4);
+
 		for (Direction dir : Direction.values()) {
 			int to = translatePos(playerPos, dir);
 			if (isEmptyCell(to) ||
@@ -147,6 +129,7 @@ public class Board {
 					isEmptyCell(translatePos(to, dir))))
 				moves.add(dir);
 		}
+		System.out.println(moves.size());
 		return moves;
 	}
 
@@ -194,6 +177,11 @@ public class Board {
 		return at(translatePos(pos, dir));
 	}
 
+	private boolean isBoxCell(int i) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 	/**
 	 * Returns true if this board represents a finished game,
 	 * where all boxes are placed on goals.
@@ -203,4 +191,5 @@ public class Board {
 			if (s == Symbol.BOX) return false;
 				return true;
 	}
+
 }
