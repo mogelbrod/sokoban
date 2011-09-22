@@ -34,7 +34,7 @@ public class Client {
                        	width = lLine.length();
             	}
             	sb.append(lLine);
-            	sb.append('|');
+            	sb.append('\n');
             	//here, we would store the row somewhere, to build our board
                 //in this demo, we just print it
                 System.out.println(lLine);

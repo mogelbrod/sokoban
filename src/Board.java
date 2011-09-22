@@ -16,37 +16,12 @@ public class Board {
 		this.height = height;
 		cells = new Symbol[height*width];
 		
-		String[] rep = boardRep.split("|");
-		for (int j = 0; j < rep.length; j++){
-			for (int i = 0; i < rep[j].length()-1; i++) {
-				switch (rep[j].charAt(i)) {
-				case '#':
-					cells[i+j*width] = Symbol.WALL;
-					break;
-				case '$':
-					cells[i+j*width] = Symbol.BOX;
-					break;
-				case '.':
-					cells[i+j*width] = Symbol.GOAL;
-					break;
-				case '+':
-					cells[i+j*width] = Symbol.PLAYER_GOAL;
-					break;
-				case '*':
-					cells[i+j*width] = Symbol.BOX_GOAL;
-					break;
-				case ' ':
-					cells[i+j*width] = Symbol.FLOOR;
-					break;
-				case '@':
-					cells[i+j*width] = Symbol.PLAYER;
-					break;
-
-				default:
-					cells[i+j*width] = Symbol.WALL;
-					break;
-				}
+		int rowMul = 0;
+		for (String row : boardRep.split("\n")) {
+			for (int i = 0; i < row.length(); i++) {
+				cells[rowMul+i] = Symbol.fromChar(row.charAt(i));
 			}
+			rowMul += width;
 		}
 	}
 
@@ -56,18 +31,28 @@ public class Board {
 
 	}
 
-	public void write() {
+	/**
+	 * Returns a string representation of this board.
+	 */
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
 		for (int i = 0; i < cells.length; i++) {
-			if(cells[i] == null)
-				System.out.print(".");
-			if(i%width == 0)
-				System.out.println();
+			if (i > 0 && i % width == 0) sb.append('\n');
+			sb.append(cells[i]);
 		}
+		return sb.toString();
 	}
 
 	/**
-	 * Returns a Vector<Direction> instance with all possible player moves
-	 * that are valid on this board.
+	 * Outputs the string representation of this board to the console.
+	 */
+	public void write() {
+		System.out.println(toString());
+	}
+
+	/**
+	 * Returns a Vector instance with all possible player moves
+	 * (as Direction instances) that are valid on this board.
 	 */
 	public Vector<Direction> findPossibleMoves() {
 		Vector<Direction> moves = new Vector<Direction>(4);
