@@ -116,7 +116,7 @@ public class Board {
 	 */
 	public boolean isEOG() {
 		for (Symbol s : cells)
-			if (s.BOX) return false;
+			if (s == Symbol.BOX) return false;
 		return true;
 	}
 }
