@@ -23,7 +23,7 @@ public class Board {
 	 * Returns true if the cell at the specified position is empty,
 	 * and a valid target for movement.
 	 */
-	public isEmptyCell(int pos) {
+	public boolean isEmptyCell(int pos) {
 		if (pos < 0 || pos >= cells.length)
 			return false;
 		Symbol c = cells[pos];
