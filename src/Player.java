@@ -57,6 +57,6 @@ public class Player {
 	//	Pop a node from the stack and examine it.
 	//	If the element sought is found in this node, quit the search and return a result.
 	//	Otherwise push all its successors (child nodes) that have not yet been discovered onto the stack.
-	//	If the stack is empty, every node in the tree has been examined Ð quit the search and return "not found".
+	//	If the stack is empty, every node in the tree has been examined - quit the search and return "not found".
 	//	If the stack is not empty, repeat from Step 2.
 }

@@ -46,6 +46,7 @@ public class Board {
 
 	public void addDirectionToPath(Direction dir) {
 		switch (dir) {
+<<<<<<< HEAD
 		case UP:
 			path += "U";
 		case DOWN:
@@ -54,6 +55,20 @@ public class Board {
 			path += "L";
 		case RIGHT:
 			path += "R";
+=======
+			case UP:
+				path += "U";
+				break;
+			case DOWN:
+				path += "D";
+				break;
+			case LEFT:
+				path += "L";
+				break;
+			case RIGHT:
+				path += "R";
+				break;
+>>>>>>> 2d0d42517c0b99f4d4d9d45418e32a89d7496cbd
 		}
 	}
 
@@ -65,22 +80,42 @@ public class Board {
 			//			System.out.print("\nMove player from " + playerPos);
 			playerPos -= width;
 			maybeBoxPos = playerPos - width;
+<<<<<<< HEAD
 			//			System.out.print(" to " + playerPos);
+=======
+//			System.out.print(" to " + playerPos);
+			break;
+>>>>>>> 2d0d42517c0b99f4d4d9d45418e32a89d7496cbd
 		case DOWN:
 			//			System.out.print("\nMove player from " + playerPos);
 			playerPos += width;
 			maybeBoxPos = playerPos + width;
+<<<<<<< HEAD
 			//			System.out.print(" to " + playerPos);
+=======
+//			System.out.print(" to " + playerPos);
+			break;
+>>>>>>> 2d0d42517c0b99f4d4d9d45418e32a89d7496cbd
 		case LEFT:
 			//			System.out.print("\nMove player from " + playerPos);
 			playerPos--;
 			maybeBoxPos = playerPos - 1;
+<<<<<<< HEAD
 			//			System.out.print(" to " + playerPos);
+=======
+//			System.out.print(" to " + playerPos);
+			break;
+>>>>>>> 2d0d42517c0b99f4d4d9d45418e32a89d7496cbd
 		case RIGHT:
 			//			System.out.print("\nMove player from " + playerPos);
 			playerPos++;
 			maybeBoxPos = playerPos + 1;
+<<<<<<< HEAD
 			//			System.out.print(" to " + playerPos);
+=======
+//			System.out.print(" to " + playerPos);
+			break;
+>>>>>>> 2d0d42517c0b99f4d4d9d45418e32a89d7496cbd
 		}
 
 		if (cells[playerPos] == Symbol.BOX)
@@ -133,8 +168,10 @@ public class Board {
 	public Vector<Direction> findPossibleMoves() {
 		Vector<Direction> moves = new Vector<Direction>(4);
 		for (Direction dir : Direction.values()) {
-			Symbol to = at(playerPos, dir);
-			if (to == Symbol.FLOOR || to == Symbol.GOAL)
+			int to = translatePos(playerPos, dir);
+			if (isEmptyCell(to) ||
+					(at(to) == Symbol.BOX &&
+					isEmptyCell(translatePos(to, dir))))
 				moves.add(dir);
 		}
 		return moves;
@@ -146,9 +183,9 @@ public class Board {
 	 */
 	public boolean isEmptyCell(int pos) {
 		Symbol c = at(pos);
-		if (c == Symbol.WALL || c == Symbol.BOX)
-			return false;
-		return true;
+		if (c == Symbol.FLOOR || c == Symbol.GOAL)
+			return true;
+		return false;
 	}
 
 	/**
@@ -165,6 +202,7 @@ public class Board {
 		case RIGHT:
 			return (pos + 1);
 		}
+		return pos;
 	}
 
 	/**
