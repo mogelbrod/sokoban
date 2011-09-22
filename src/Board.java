@@ -14,52 +14,21 @@ public class Board {
 	Board(String boardRep, int width, int height) {
 		this.width = width;
 		this.height = height;
-<<<<<<< HEAD
-		cells = new Symbol[height*width];
-		Symbol tmp;
-		String[] rep = boardRep.split("a");
-		for (int j = 0; j < rep.length; j++){
-			System.out.println(rep[j]);
-			for (int i = 0; i < rep[j].length()-1; i++) {
-				switch (rep[j].charAt(i)) {
-				case '#':
-					cells[i+j*width] = Symbol.WALL;
-					break;
-				case '$':
-					cells[i+j*width] = Symbol.BOX;
-					break;
-				case '.':
-					cells[i+j*width] = Symbol.GOAL;
-					break;
-				case '+':
-					cells[i+j*width] = Symbol.PLAYER_GOAL;
-					break;
-				case '*':
-					cells[i+j*width] = Symbol.BOX_GOAL;
-					break;
-				case ' ':
-					cells[i+j*width] = Symbol.FLOOR;
-					break;
-				case '@':
-					cells[i+j*width] = Symbol.PLAYER;
-					break;
 
-				default:
-					cells[i+j*width] = Symbol.WALL;
-					break;
-				}
-=======
+
 		cells = new Symbol[width*height];
 
 		int rowMul = 0;
 		for (String row : boardRep.split("\n")) {
-			for (int i = 0; i < row.length(); i++) {
-				cells[rowMul+i] = Symbol.fromChar(row.charAt(i));
->>>>>>> 4df544a6578b13105527f4a93bd936d5a1916a51
+			for (int k  = 0; k  < row.length(); k++) {
+				cells[rowMul+k] = Symbol.fromChar(row.charAt(k));
 			}
 			rowMul += width;
+
 		}
 	}
+
+
 
 	Board(Symbol[] cells, int width, int height) {
 		this.cells = cells;
@@ -85,14 +54,6 @@ public class Board {
 		return this.cells;
 	}
 
-<<<<<<< HEAD
-	public void write(){
-		for (int i = 0; i < cells.length; i++) {
-			if(cells[i] != null)
-				System.out.print(cells[i].name());
-			if(i%width == 0)
-				System.out.println();
-=======
 	/**
 	 * Returns a string representation of this board.
 	 */
@@ -101,7 +62,6 @@ public class Board {
 		for (int i = 0; i < cells.length; i++) {
 			if (i > 0 && i % width == 0) sb.append('\n');
 			sb.append(cells[i]);
->>>>>>> 4df544a6578b13105527f4a93bd936d5a1916a51
 		}
 		return sb.toString();
 	}
@@ -146,14 +106,14 @@ public class Board {
 	 */
 	public boolean canMove(int pos, Direction dir) {
 		switch (dir) {
-			case UP:
-				return isEmptyCell(pos - this.width);
-			case DOWN:
-				return isEmptyCell(pos + this.width);
-			case LEFT:
-				return isEmptyCell(pos - 1);
-			case RIGHT:
-				return isEmptyCell(pos + 1);
+		case UP:
+			return isEmptyCell(pos - this.width);
+		case DOWN:
+			return isEmptyCell(pos + this.width);
+		case LEFT:
+			return isEmptyCell(pos - 1);
+		case RIGHT:
+			return isEmptyCell(pos + 1);
 		}
 		return false;
 	}
@@ -165,6 +125,6 @@ public class Board {
 	public boolean isEOG() {
 		for (Symbol s : cells)
 			if (s == Symbol.BOX) return false;
-		return true;
+				return true;
 	}
 }

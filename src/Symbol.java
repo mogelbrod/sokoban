@@ -1,8 +1,6 @@
 public enum Symbol {
 	WALL, PLAYER, PLAYER_GOAL, BOX, BOX_GOAL, GOAL, FLOOR;
 
-<<<<<<< HEAD
-=======
 	public static Symbol fromChar(char c) {
 		switch (c) {
 			case '#': return Symbol.WALL;
@@ -28,5 +26,4 @@ public enum Symbol {
 		}
 		return "";
 	}
->>>>>>> 4df544a6578b13105527f4a93bd936d5a1916a51
 }
