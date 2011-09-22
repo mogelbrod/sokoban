@@ -15,20 +15,15 @@ public class Board {
 		this.width = width;
 		this.height = height;
 
-
 		cells = new Symbol[width*height];
 
 		int rowMul = 0;
 		for (String row : boardRep.split("\n")) {
-			for (int k  = 0; k  < row.length(); k++) {
+			for (int k = 0; k < row.length(); k++)
 				cells[rowMul+k] = Symbol.fromChar(row.charAt(k));
-			}
 			rowMul += width;
-
 		}
 	}
-
-
 
 	Board(Symbol[] cells, int width, int height) {
 		this.cells = cells;
@@ -142,10 +137,17 @@ public class Board {
 		Vector<Direction> moves = new Vector<Direction>(4);
 		for (Direction dir : Direction.values()) {
 			int to = translatePos(playerPos, dir);
-			if (isEmptyCell(to) ||
-					(at(to) == Symbol.BOX &&
-					isEmptyCell(translatePos(to, dir))))
-				moves.add(dir);
+			switch (at(to)) {
+				case FLOOR:
+				case GOAL:
+					moves.add(dir);
+					break;
+				case BOX:
+				case BOX_GOAL:
+					if (isEmptyCell(translatePos(to, dir)))
+						moves.add(dir);
+					break;
+			}
 		}
 		return moves;
 	}
