@@ -6,7 +6,7 @@
 	
 	<target name="run" depends="compile">
 		<java classname="${main-class}">
-			<arg value="130.237.218.85:7777"/>
+			<arg value="130.237.218.85"/>
 			<arg value="7777"/>
 			<arg value="1"/>
 			<classpath location="${classes.dir}" path="${java.class.path}" />
