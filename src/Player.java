@@ -26,8 +26,8 @@ public class Player {
 			if (moves.size() != 0) {
 				for (Direction d : moves) {
 					Board nextBoard = new Board(currentState, d);
-					if(MASTER_CONTROL_TOWER.check(nextBoard.cells, nextBoard.getWidth())){
-						if(!visited(nextBoard.cells.hashCode())){
+					if(!visited(nextBoard.cells.hashCode())){
+						if(MASTER_CONTROL_TOWER.check(nextBoard.cells, nextBoard.getWidth())){
 							nextBoard.addDirectionToPath(d);
 							stack.push(nextBoard);
 							System.out.println(stack.size());
