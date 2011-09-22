@@ -1,4 +1,4 @@
-public class Board {
+	public class Board {
 	// Save string path while searching through the game tree.
 	// To avoid unnecessary time waste, save player's position.
 	String path;
