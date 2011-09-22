@@ -11,7 +11,6 @@ public class Board {
 	// Current player position
 	protected int playerPos;
 
-
 	Board(String boardRep, int height, int width){
 		this.width = width;
 		this.height = height;
@@ -57,6 +56,19 @@ public class Board {
 
 	}
 
+	public void write() {
+		for (int i = 0; i < cells.length; i++) {
+			if(cells[i] == null)
+				System.out.print(".");
+			if(i%width == 0)
+				System.out.println();
+		}
+	}
+
+	/**
+	 * Returns a Vector<Direction> instance with all possible player moves
+	 * that are valid on this board.
+	 */
 	public Vector<Direction> findPossibleMoves() {
 		Vector<Direction> moves = new Vector<Direction>(4);
 		for (Direction dir : Direction.values()) {
@@ -66,32 +78,6 @@ public class Board {
 		return moves;
 	}
 
-<<<<<<< HEAD
-	public void write(){
-		for (int i = 0; i < cells.length; i++) {
-			if(cells[i] == null)
-				System.out.print(".");
-			if(i%width == 0)
-				System.out.println();
-		}
-
-	}
-
-	// Returns true if an object (player or box) can be moved from a
-	// position towards a specified direction.
-	private boolean canMove(int pos, Direction dir) {
-		switch (dir) {
-		case UP:
-			pos -= this.width;
-			if (pos < 0) return false;
-			break;
-		case DOWN:
-			break;
-		case LEFT:
-			break;
-		case RIGHT:
-			break;
-=======
 	/**
 	 * Returns true if the cell at the specified position is empty,
 	 * and a valid target for movement.
@@ -120,7 +106,6 @@ public class Board {
 				return isEmptyCell(pos - 1);
 			case RIGHT:
 				return isEmptyCell(pos + 1);
->>>>>>> deb3f21a2b6b6f3cd3ca4903088df86f77d80f9e
 		}
 		return false;
 	}
