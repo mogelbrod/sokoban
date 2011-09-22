@@ -46,29 +46,18 @@ public class Board {
 
 	public void addDirectionToPath(Direction dir) {
 		switch (dir) {
-<<<<<<< HEAD
 		case UP:
 			path += "U";
+			break;
 		case DOWN:
 			path += "D";
+			break;
 		case LEFT:
 			path += "L";
+			break;
 		case RIGHT:
 			path += "R";
-=======
-			case UP:
-				path += "U";
-				break;
-			case DOWN:
-				path += "D";
-				break;
-			case LEFT:
-				path += "L";
-				break;
-			case RIGHT:
-				path += "R";
-				break;
->>>>>>> 2d0d42517c0b99f4d4d9d45418e32a89d7496cbd
+			break;
 		}
 	}
 
@@ -80,218 +69,207 @@ public class Board {
 			//			System.out.print("\nMove player from " + playerPos);
 			playerPos -= width;
 			maybeBoxPos = playerPos - width;
-<<<<<<< HEAD
+
 			//			System.out.print(" to " + playerPos);
-=======
-//			System.out.print(" to " + playerPos);
 			break;
->>>>>>> 2d0d42517c0b99f4d4d9d45418e32a89d7496cbd
 		case DOWN:
 			//			System.out.print("\nMove player from " + playerPos);
 			playerPos += width;
 			maybeBoxPos = playerPos + width;
-<<<<<<< HEAD
 			//			System.out.print(" to " + playerPos);
-=======
-//			System.out.print(" to " + playerPos);
 			break;
->>>>>>> 2d0d42517c0b99f4d4d9d45418e32a89d7496cbd
 		case LEFT:
 			//			System.out.print("\nMove player from " + playerPos);
 			playerPos--;
 			maybeBoxPos = playerPos - 1;
-<<<<<<< HEAD
 			//			System.out.print(" to " + playerPos);
-=======
-//			System.out.print(" to " + playerPos);
+			//			System.out.print(" to " + playerPos);
 			break;
->>>>>>> 2d0d42517c0b99f4d4d9d45418e32a89d7496cbd
+
 		case RIGHT:
 			//			System.out.print("\nMove player from " + playerPos);
 			playerPos++;
 			maybeBoxPos = playerPos + 1;
-<<<<<<< HEAD
+
 			//			System.out.print(" to " + playerPos);
-=======
-//			System.out.print(" to " + playerPos);
 			break;
->>>>>>> 2d0d42517c0b99f4d4d9d45418e32a89d7496cbd
 		}
+	
 
-		if (cells[playerPos] == Symbol.BOX)
-			cells[maybeBoxPos] = Symbol.BOX;
-		cells[playerPos] = Symbol.PLAYER;
+	if (cells[playerPos] == Symbol.BOX)
+		cells[maybeBoxPos] = Symbol.BOX;
+	cells[playerPos] = Symbol.PLAYER;
+}
+
+//DO FUCKING MOVE!
+//	public Board move(Direction dir) {
+//		Board board = new Board(cells.clone(), width, height);
+//		// TODO: Do move
+//		return board;
+//	}
+
+public int getWidth() {
+	return this.width;
+}
+
+public int getHeight() {
+	return this.height;
+}
+
+public Symbol[] getCells() {
+	return this.cells;
+}
+
+/**
+ * Returns a string representation of this board.
+ */
+public String toString() {
+	StringBuilder sb = new StringBuilder();
+	for (int i = 0; i < cells.length; i++) {
+		if (i > 0 && i % width == 0) sb.append('\n');
+		sb.append(cells[i]);
 	}
+	return sb.toString();
+}
 
-	//DO FUCKING MOVE!
-	//	public Board move(Direction dir) {
-	//		Board board = new Board(cells.clone(), width, height);
-	//		// TODO: Do move
-	//		return board;
-	//	}
+/**
+ * Outputs the string representation of this board to the console.
+ */
+public void write() {
+	System.out.println(toString());
+}
 
-	public int getWidth() {
-		return this.width;
+/**
+ * Returns a Vector instance with all possible player moves
+ * (as Direction instances) that are valid on this board.
+ */
+public Vector<Direction> findPossibleMoves() {
+	Vector<Direction> moves = new Vector<Direction>(4);
+	for (Direction dir : Direction.values()) {
+		int to = translatePos(playerPos, dir);
+		if (isEmptyCell(to) ||
+				(at(to) == Symbol.BOX &&
+				isEmptyCell(translatePos(to, dir))))
+			moves.add(dir);
 	}
+	return moves;
+}
 
-	public int getHeight() {
-		return this.height;
+/**
+ * Returns true if the cell at the specified position is empty,
+ * and a valid target for movement.
+ */
+public boolean isEmptyCell(int pos) {
+	Symbol c = at(pos);
+	if (c == Symbol.FLOOR || c == Symbol.GOAL)
+		return true;
+	return false;
+}
+
+/**
+ * Returns a position translated in a specified direction.
+ */
+public int translatePos(int pos, Direction dir) {
+	switch (dir) {
+	case UP:
+		return (pos - this.width);
+	case DOWN:
+		return (pos + this.width);
+	case LEFT:
+		return (pos - 1);
+	case RIGHT:
+		return (pos + 1);
 	}
+	return pos;
+}
 
-	public Symbol[] getCells() {
-		return this.cells;
-	}
+/**
+ * Returns the symbol located at the specified position.
+ */
+public Symbol at(int pos) {
+	if (pos < 0 || pos >= cells.length)
+		return Symbol.WALL;
+	return cells[pos];
+}
 
-	/**
-	 * Returns a string representation of this board.
-	 */
-	public String toString() {
-		StringBuilder sb = new StringBuilder();
-		for (int i = 0; i < cells.length; i++) {
-			if (i > 0 && i % width == 0) sb.append('\n');
-			sb.append(cells[i]);
-		}
-		return sb.toString();
-	}
+/**
+ * Returns the symbol located in the specified direction from a position.
+ */
+public Symbol at(int pos, Direction dir) {
+	return at(translatePos(pos, dir));
+}
 
-	/**
-	 * Outputs the string representation of this board to the console.
-	 */
-	public void write() {
-		System.out.println(toString());
-	}
-
-	/**
-	 * Returns a Vector instance with all possible player moves
-	 * (as Direction instances) that are valid on this board.
-	 */
-	public Vector<Direction> findPossibleMoves() {
-		Vector<Direction> moves = new Vector<Direction>(4);
-		for (Direction dir : Direction.values()) {
-			int to = translatePos(playerPos, dir);
-			if (isEmptyCell(to) ||
-					(at(to) == Symbol.BOX &&
-					isEmptyCell(translatePos(to, dir))))
-				moves.add(dir);
-		}
-		return moves;
-	}
-
-	/**
-	 * Returns true if the cell at the specified position is empty,
-	 * and a valid target for movement.
-	 */
-	public boolean isEmptyCell(int pos) {
-		Symbol c = at(pos);
-		if (c == Symbol.FLOOR || c == Symbol.GOAL)
+/**
+ * Returns true if thus board represents a finished game,
+ * where  all boxes are placed on goals.
+ */
+public boolean isWin(){
+	for (Symbol s : cells)
+		if (s == Symbol.BOX) return false;
 			return true;
+}
+
+/**
+ * Returns true if this board represents a finished game,
+ * where all boxes are placed on goals.
+ */
+public boolean isEOG() {
+	return false;
+}
+
+
+/**
+ * Returns true if the object is in a corner.
+ * @param position - current position of item
+ * @return
+ */
+public boolean corner_rule(int position){
+	Symbol UP = cells[position-width];
+	Symbol DOWN = cells[position+width];
+	Symbol RIGHT = cells[position+1];
+	Symbol LEFT = cells[position-1];
+
+
+	//If a goal is at the position do that move.
+	if(cells[position] == Symbol.BOX_GOAL)
 		return false;
-	}
 
-	/**
-	 * Returns a position translated in a specified direction.
+
+	/* Case
+	 * ###
+	 *  $#
+	 *   #
 	 */
-	public int translatePos(int pos, Direction dir) {
-		switch (dir) {
-		case UP:
-			return (pos - this.width);
-		case DOWN:
-			return (pos + this.width);
-		case LEFT:
-			return (pos - 1);
-		case RIGHT:
-			return (pos + 1);
-		}
-		return pos;
-	}
+	if((UP == Symbol.WALL || UP == Symbol.BOX) && (RIGHT == Symbol.WALL || RIGHT == Symbol.BOX))
+		return true;
 
-	/**
-	 * Returns the symbol located at the specified position.
+	/*Case
+	 *   #
+	 *  $#
+	 * ### 
 	 */
-	public Symbol at(int pos) {
-		if (pos < 0 || pos >= cells.length)
-			return Symbol.WALL;
-		return cells[pos];
-	}
+	if((DOWN == Symbol.WALL || DOWN == Symbol.BOX) && (RIGHT == Symbol.WALL || RIGHT == Symbol.BOX))
+		return true;
 
-	/**
-	 * Returns the symbol located in the specified direction from a position.
+
+	/*Case
+	 * #
+	 * #$
+	 * ### 
 	 */
-	public Symbol at(int pos, Direction dir) {
-		return at(translatePos(pos, dir));
-	}
+	if((DOWN == Symbol.WALL || DOWN == Symbol.BOX) && (LEFT == Symbol.WALL || LEFT == Symbol.BOX))
+		return true;
 
-	/**
-	 * Returns true if thus board represents a finished game,
-	 * where  all boxes are placed on goals.
+
+	/*Case
+	 * ###
+	 * #$
+	 * # 
 	 */
-	public boolean isWin(){
-		for (Symbol s : cells)
-			if (s == Symbol.BOX) return false;
-				return true;
-	}
-
-	/**
-	 * Returns true if this board represents a finished game,
-	 * where all boxes are placed on goals.
-	 */
-	public boolean isEOG() {
-		return false;
-	}
+	if((LEFT == Symbol.WALL || LEFT == Symbol.BOX) && (UP == Symbol.WALL || UP == Symbol.BOX))
+		return true;
 
 
-	/**
-	 * Returns true if the object is in a corner.
-	 * @param position - current position of item
-	 * @return
-	 */
-	public boolean corner_rule(int position){
-		Symbol UP = cells[position-width];
-		Symbol DOWN = cells[position+width];
-		Symbol RIGHT = cells[position+1];
-		Symbol LEFT = cells[position-1];
-		
-		
-		//If a goal is at the position do that move.
-		if(cells[position] == Symbol.BOX_GOAL)
-			return false;
-				
-		
-		/* Case
-		 * ###
-		 *  $#
-		 *   #
-		 */
-		if((UP == Symbol.WALL || UP == Symbol.BOX) && (RIGHT == Symbol.WALL || RIGHT == Symbol.BOX))
-			return true;
-		
-		/*Case
-		 *   #
-		 *  $#
-		 * ### 
-		 */
-		if((DOWN == Symbol.WALL || DOWN == Symbol.BOX) && (RIGHT == Symbol.WALL || RIGHT == Symbol.BOX))
-			return true;
-		
-		
-		/*Case
-		 * #
-		 * #$
-		 * ### 
-		 */
-		if((DOWN == Symbol.WALL || DOWN == Symbol.BOX) && (LEFT == Symbol.WALL || LEFT == Symbol.BOX))
-			return true;
-		
-		
-		/*Case
-		 * ###
-		 * #$
-		 * # 
-		 */
-		if((LEFT == Symbol.WALL || LEFT == Symbol.BOX) && (UP == Symbol.WALL || UP == Symbol.BOX))
-			return true;
-		
-		
-		return false;
-	}
+	return false;
+}
 }
