@@ -133,7 +133,8 @@ public class Board {
 	public Vector<Direction> findPossibleMoves() {
 		Vector<Direction> moves = new Vector<Direction>(4);
 		for (Direction dir : Direction.values()) {
-			if (canMove(playerPos, dir))
+			Symbol to = at(playerPos, dir);
+			if (to == Symbol.FLOOR || to == Symbol.GOAL)
 				moves.add(dir);
 		}
 		return moves;
@@ -144,31 +145,42 @@ public class Board {
 	 * and a valid target for movement.
 	 */
 	public boolean isEmptyCell(int pos) {
-		if (pos < 0 || pos >= cells.length)
-			return false;
-		Symbol c = cells[pos];
+		Symbol c = at(pos);
 		if (c == Symbol.WALL || c == Symbol.BOX)
 			return false;
-
 		return true;
 	}
 
 	/**
-	 * Returns true if an object (player or box) can be moved from a
-	 * position towards a specified direction.
+	 * Returns a position translated in a specified direction.
 	 */
-	public boolean canMove(int pos, Direction dir) {
+	public int translatePos(int pos, Direction dir) {
 		switch (dir) {
 		case UP:
-			return isEmptyCell(pos - this.width);
+			return (pos - this.width);
 		case DOWN:
-			return isEmptyCell(pos + this.width);
+			return (pos + this.width);
 		case LEFT:
-			return isEmptyCell(pos - 1);
+			return (pos - 1);
 		case RIGHT:
-			return isEmptyCell(pos + 1);
+			return (pos + 1);
 		}
-		return false;
+	}
+
+	/**
+	 * Returns the symbol located at the specified position.
+	 */
+	public Symbol at(int pos) {
+		if (pos < 0 || pos >= cells.length)
+			return Symbol.WALL;
+		return cells[pos];
+	}
+
+	/**
+	 * Returns the symbol located in the specified direction from a position.
+	 */
+	public Symbol at(int pos, Direction dir) {
+		return at(translatePos(pos, dir));
 	}
 
 	/**
