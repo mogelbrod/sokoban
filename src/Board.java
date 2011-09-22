@@ -1,3 +1,5 @@
+import java.util.Vector;
+
 public class Board {
 	// Dimensions of board.
 	protected int width, height;
@@ -5,15 +7,21 @@ public class Board {
 	protected Symbol[] cells;
 
 	// Save string path while searching through the game tree.
-	// To avoid unnecessary time waste, save player's position.
-	String path;
-	int playerIndex;
+	protected String path;
+
+	// Current player position
+	protected int playerPos;
 
 	Board(Board board, Direction dir) {
 	}
 
-	public Direction[] findPossibleMoves() {
-		return null;
+	public Vector<Direction> findPossibleMoves() {
+		Vector<Direction> moves = new Vector<Direction>(4);
+		for (Direction dir : Direction.values()) {
+			if (canMove(playerPos, dir))
+				moves.add(dir);
+		}
+		return moves;
 	}
 
 	/**
@@ -46,5 +54,15 @@ public class Board {
 				return isEmptyCell(pos + 1);
 		}
 		return false;
+	}
+
+	/**
+	 * Returns true if this board represents a finished game,
+	 * where all boxes are placed on goals.
+	 */
+	public boolean isEOG() {
+		for (Symbol s : cells)
+			if (s.BOX) return false;
+		return true;
 	}
 }
