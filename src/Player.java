@@ -28,12 +28,11 @@ public class Player {
 			boolean noUnvisitedChildNodes = true;
 			if (moves.size() != 0) {
 				for (Direction d : moves) {
-					Board nextBoard = currentState.clone().move(d);
+					Board nextBoard = new Board(currentState, d);
 
 					if(!visited(nextBoard.hashCode())){
 						noUnvisitedChildNodes = false;
 						if(MASTER_CONTROL_TOWER.check(nextBoard.cells, nextBoard.getWidth())){
-							nextBoard.addDirectionToPath(d);
 							stack.push(nextBoard);
 						}	
 

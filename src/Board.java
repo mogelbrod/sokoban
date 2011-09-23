@@ -2,7 +2,7 @@ import java.util.Vector;
 
 public class Board {
 	// Dimensions of board.
-	protected final int width, height;
+	protected int width, height;
 	protected Symbol[] cells;
 	
 	// Save string path while searching through the game tree.
@@ -11,28 +11,54 @@ public class Board {
 	// Current player position
 	protected int player;
 
-	Board(String boardRep, int width, int height) {
-		this.width = width;
-		this.height = height;
-		path = "";
+	/**
+	 * Create new board with a predefined layout.
+	 */
+	Board(Symbol[] cells, int width, int height) {
+		initBoard(cells, width, height, "");
+	}
 
+	/**
+	 * Create new board with a predefined layout defined by a string.
+	 */
+	Board(String boardRep, int width, int height) {
 		cells = new Symbol[width*height];
 
 		int rowMul = 0;
 		for (String row : boardRep.split("\n")) {
-			for (int k = 0; k < row.length(); k++) {
+			for (int k = 0; k < row.length(); k++)
 				cells[rowMul+k] = Symbol.fromChar(row.charAt(k));
-				if (cells[rowMul+k] == Symbol.PLAYER)
-					player = rowMul+k;
-			}
 			rowMul += width;
 		}
+
+		initBoard(cells, width, height, "");
 	}
 
-	Board(Symbol[] cells, int width, int height) {
+	/**
+	 * Create new board with a predefined layout and immidiately move the
+	 * player in the specified direction.
+	 */
+	Board(Board board, Direction dir) {
+		initBoard(board.getCells(), board.getWidth(), board.getHeight(), board.getPath());
+		move(dir);
+	}
+
+	/**
+	 * Initialize board data for this board instance.
+	 * The cells argument should be clone()d if the board is to be copied.
+	 */
+	private void initBoard(Symbol[] cells, int width, int height, String path) {
+		// Set data
 		this.cells = cells;
 		this.width = width;
 		this.height = height;
+		this.path = path;
+
+		// Set player position
+		player = -1;
+		for (int i = 0; i < cells.length; i++)
+			if (cells[i] == Symbol.PLAYER || cells[i] == Symbol.PLAYER_GOAL)
+				player = i;
 	}
 
 	/**
