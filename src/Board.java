@@ -14,13 +14,17 @@ public class Board {
 	Board(String boardRep, int width, int height) {
 		this.width = width;
 		this.height = height;
+		path = "";
 
 		cells = new Symbol[width*height];
 
 		int rowMul = 0;
 		for (String row : boardRep.split("\n")) {
-			for (int k = 0; k < row.length(); k++)
+			for (int k = 0; k < row.length(); k++) {
 				cells[rowMul+k] = Symbol.fromChar(row.charAt(k));
+				if (cells[rowMul+k] == Symbol.PLAYER)
+					player = rowMul+k;
+			}
 			rowMul += width;
 		}
 	}
@@ -31,71 +35,11 @@ public class Board {
 		this.height = height;
 	}
 
-	Board(Board board, Direction dir) {
-		this.width = board.width;
-		this.height = board.height;
-		this.path = board.path;
-		this.cells = board.cells;
-		updateBoard(dir);
-	}
-
-	public void addDirectionToPath(Direction dir) {
-		switch (dir) {
-		case UP:
-			path += "U";
-			break;
-		case DOWN:
-			path += "D";
-			break;
-		case LEFT:
-			path += "L";
-			break;
-		case RIGHT:
-			path += "R";
-			break;
-		}
-	}
-
-	private void updateBoard(Direction dir) {
-		cells[player] = Symbol.FLOOR;
-		int maybeBoxPos = 0;
-		switch (dir) {
-		case UP:
-			//			System.out.print("\nMove player from " + player);
-			player -= width;
-			maybeBoxPos = player - width;
-
-			//			System.out.print(" to " + player);
-			break;
-		case DOWN:
-			//			System.out.print("\nMove player from " + player);
-			player += width;
-			maybeBoxPos = player + width;
-			//			System.out.print(" to " + player);
-			break;
-		case LEFT:
-			//			System.out.print("\nMove player from " + player);
-			player--;
-			maybeBoxPos = player - 1;
-			//			System.out.print(" to " + player);
-			//			System.out.print(" to " + player);
-			break;
-
-		case RIGHT:
-			//			System.out.print("\nMove player from " + player);
-			player++;
-			maybeBoxPos = player + 1;
-
-			//			System.out.print(" to " + player);
-			break;
-		}
-
-		if (cells[player] == Symbol.BOX)
-			cells[maybeBoxPos] = Symbol.BOX;
-		cells[player] = Symbol.PLAYER;
-	}
-
-	public boolean move(Direction dir) {
+	/**
+	 * Moves the player piece on this board, updating the position of it,
+	 * and any box it collides with.
+	 */
+	public Board move(Direction dir) {
 		// Restore cell at old player position
 		cells[player] = (at(player) == Symbol.PLAYER_GOAL) ? Symbol.GOAL : Symbol.FLOOR;
 		player = translatePos(player, dir);
@@ -105,13 +49,17 @@ public class Board {
 		// TODO: try/catch array index out of bounds
 		// Move box?
 		if (to == Symbol.BOX || to == Symbol.BOX_GOAL) {
-			int boxDestination = translatePos(to, dir);
-			if (at(boxDestination) )
-			cells[] = (to == Symbol.GOAL) ? Symbol.BOX_GOAL : Symbol.BOX;
+			int boxDest = translatePos(player, dir);
+			cells[boxDest] = (at(boxDest) == Symbol.GOAL) ? Symbol.BOX_GOAL : Symbol.BOX;
 		}
 
 		// Update cell at new player position
 		cells[player] = (to == Symbol.GOAL) ? Symbol.PLAYER_GOAL : Symbol.PLAYER;
+
+		// Append move to path
+		path += dir.toString();
+
+		return this;
 	}
 
 	/**
@@ -186,7 +134,18 @@ public class Board {
 	 * where all boxes are placed on goals.
 	 */
 	public boolean isEOG() {
-		return false;
+		for (Symbol s : cells)
+			if (s == Symbol.BOX) return false;
+				return true;
+	}
+
+	@Override
+	public int hashCode() {
+		int h = 0;
+		for(int i = 0; i < cells.length; i++) {
+			h ^= ( h << 5 ) + ( h >> 2 ) + cells[i].toChar();
+		}
+		return h;
 	}
 
 	public int getWidth() {
@@ -195,6 +154,10 @@ public class Board {
 
 	public int getHeight() {
 		return this.height;
+	}
+
+	public String getPath() {
+		return this.path;
 	}
 
 	public Symbol[] getCells() {

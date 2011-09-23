@@ -32,28 +32,23 @@ public class Client {
 					if(lLine.length() > width)
 						width = lLine.length();
 				}
-				//here, we would store the row somewhere, to build our board
-				//in this demo, we just print it
-				//System.out.println(lLine);
 				sb.append(lLine).append('\n');
-
 			}
-
-			// remove trailing newline
-			sb.deleteCharAt(sb.length()-1);
 
 			Board board = new Board(sb.toString(), width, height);
 			board.write();
 			//now, we should find a solution to the sokoban
 
+			Player p = new Player();
+			String solution = p.dfs(board);
 			//we've found our solution (this is actually the solution to board 1)
-			String lMySol = "U R R U U L D L L U L L D R R R R L D D R U R U D L L U R";
+			//String solution = "U R R U U L D L L U L L D R R R R L D D R U R U D L L U R";
 			//these formats are also valid:
-			//String lMySol="URRUULDLLULLDRRRRLDDRURUDLLUR";
-			//String lMySol="0 3 3 0 0 2 1 2 2 0 2 2 1 3 3 3 3 2 1 1 3 0 3 0 1 2 2 0 3";
+			//String solution="URRUULDLLULLDRRRRLDDRURUDLLUR";
+			//String solution="0 3 3 0 0 2 1 2 2 0 2 2 1 3 3 3 3 2 1 1 3 0 3 0 1 2 2 0 3";
 
 			//send the solution to the server
-			lOut.println(lMySol);
+			lOut.println(solution);
 			lOut.flush();
 
 			//read answer from the server
