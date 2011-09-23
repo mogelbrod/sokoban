@@ -19,11 +19,12 @@ public class Rules {
 			if(cells[i] == Symbol.BOX)
 				boxes.add(i);
 		}
-
-		for (Integer numBox : boxes) {
-			updatePosition(numBox);
-			if(corner_rule(numBox))
-				return false;	
+		if(boxes.size() > 0){
+			for (Integer numBox : boxes) {
+				updatePosition(numBox);
+				if(corner_rule(numBox))
+					return false;	
+			}	
 		}
 		return true;
 	}
