@@ -5,8 +5,8 @@ public class Rules {
 	protected Symbol UP,DOWN,LEFT,RIGHT;
 	protected Symbol[] cells;
 	protected int width;
-	
-	
+
+
 	/*
 	 * Main method. Call this to check ALL rules.
 	 * Returns true iff _ALL_ rules are accepted.
@@ -19,15 +19,25 @@ public class Rules {
 			if(cells[i] == Symbol.BOX)
 				boxes.add(i);
 		}
+<<<<<<< HEAD
 		
 //		for (int numBox : boxes) {
 //			updatePosition(numBox);
 //			if(corner_rule(numBox))
 //				return false;	
 //		}
+=======
+		if(boxes.size() > 0){
+			for (Integer numBox : boxes) {
+				updatePosition(numBox);
+				if(corner_rule(numBox))
+					return false;	
+			}	
+		}
+>>>>>>> 34b8d047325a2387e288736543bffe07a2ded6a8
 		return true;
 	}
-	
+
 	private void updatePosition(int position){
 		UP = cells[position-width];
 		DOWN = cells[position+width];
@@ -35,7 +45,7 @@ public class Rules {
 		LEFT = cells[position-1];
 
 	}
-	
+
 	/**
 	 * Returns true if the object is in a corner.
 	 * @param position - current position of item
@@ -47,44 +57,34 @@ public class Rules {
 		//If a goal is at the position do that move.
 		if(cells[position] == Symbol.BOX_GOAL)
 			return false;
-
-
-		/* Case
-		 * ###
-		 *  $#
-		 *   #
-		 */
-		if((UP == Symbol.WALL || UP == Symbol.BOX) && (RIGHT == Symbol.WALL || RIGHT == Symbol.BOX))
+		
+		if(((UP == Symbol.WALL) || (DOWN == Symbol.WALL)) && (LEFT == Symbol.WALL || RIGHT == Symbol.WALL))
 			return true;
-
-		/*Case
-		 *   #
-		 *  $#
-		 * ### 
-		 */
-		if((DOWN == Symbol.WALL || DOWN == Symbol.BOX) && (RIGHT == Symbol.WALL || RIGHT == Symbol.BOX))
-			return true;
-
-
-		/*Case
-		 * #
-		 * #$
-		 * ### 
-		 */
-		if((DOWN == Symbol.WALL || DOWN == Symbol.BOX) && (LEFT == Symbol.WALL || LEFT == Symbol.BOX))
-			return true;
-
-
-		/*Case
-		 * ###
-		 * #$
-		 * # 
-		 */
-		if((LEFT == Symbol.WALL || LEFT == Symbol.BOX) && (UP == Symbol.WALL || UP == Symbol.BOX))
-			return true;
-
-
+		
+		
+		
+		if((UP == Symbol.WALL || DOWN == Symbol.WALL) && (RIGHT == Symbol.BOX)){
+			if(corner_rule(position+1))
+				return true;
+		}
+		
+		
+		if((UP == Symbol.WALL || DOWN == Symbol.WALL) && (LEFT == Symbol.BOX)){
+			if(corner_rule(position-1))
+				return true;
+		}
+		
+		if((LEFT == Symbol.WALL || RIGHT == Symbol.WALL) && (UP == Symbol.BOX)){
+			if(corner_rule(position-width))
+				return true;
+		}
+		
+		if((LEFT == Symbol.WALL || RIGHT == Symbol.WALL) && (DOWN == Symbol.BOX)){
+			if(corner_rule(position+width))
+				return true;
+		}
+		
 		return false;
 	}
-	
+
 }
