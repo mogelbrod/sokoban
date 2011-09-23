@@ -4,7 +4,7 @@ public class Board {
 	// Dimensions of board.
 	protected final int width, height;
 	protected Symbol[] cells;
-
+	
 	// Save string path while searching through the game tree.
 	protected String path;
 
@@ -20,13 +20,12 @@ public class Board {
 
 		int rowMul = 0;
 		for (String row : boardRep.split("\n")) {
-			for (int k  = 0; k  < row.length(); k++) {
+			for (int k = 0; k < row.length(); k++) {
 				cells[rowMul+k] = Symbol.fromChar(row.charAt(k));
 				if (cells[rowMul+k] == Symbol.PLAYER)
 					playerPos = rowMul+k;
 			}
 			rowMul += width;
-
 		}
 	}
 
@@ -40,7 +39,8 @@ public class Board {
 		this.width = board.width;
 		this.height = board.height;
 		this.path = board.path;
-		this.cells = board.cells;
+		this.cells = new Symbol[board.cells.length];
+		System.arraycopy(board.cells, 0, this.cells, 0, cells.length);
 		this.playerPos = board.playerPos;
 		updateBoard(dir);
 	}
@@ -56,6 +56,7 @@ public class Board {
 		case LEFT:
 			path += "L";
 			break;
+
 		case RIGHT:
 			path += "R";
 			break;
@@ -72,6 +73,12 @@ public class Board {
 			cells[maybeBoxPos] = Symbol.BOX;
 		cells[playerPos] = Symbol.PLAYER;
 	}
+
+	/**
+	 * Returns true if the cell at the specified position is empty,
+	 * and a valid target for movement.
+	 */
+
 
 	//DO FUCKING MOVE!
 	//	public Board move(Direction dir) {
@@ -102,7 +109,7 @@ public class Board {
 			if (cells[i] != null)
 				sb.append(cells[i]);
 			else
-				sb.append("#");
+				sb.append(" ");
 		}
 		return sb.toString();
 	}
@@ -119,19 +126,19 @@ public class Board {
 	 * (as Direction instances) that are valid on this board.
 	 */
 	public Vector<Direction> findPossibleMoves() {
-		System.out.println("In findPossibleMoves()");
 		Vector<Direction> moves = new Vector<Direction>(4);
 
 		for (Direction dir : Direction.values()) {
 			int to = translatePos(playerPos, dir);
 			if (isEmptyCell(to) ||
 					(at(to) == Symbol.BOX &&
-					isEmptyCell(translatePos(to, dir))))
+					isEmptyCell(translatePos(to, dir))) || 
+					(at(to) == Symbol.BOX && cells[translatePos(to, dir)] == Symbol.GOAL))
 				moves.add(dir);
 		}
-		System.out.println(moves.size());
 		return moves;
 	}
+
 
 	/**
 	 * Returns true if the cell at the specified position is empty,
@@ -177,9 +184,11 @@ public class Board {
 		return at(translatePos(pos, dir));
 	}
 
-	private boolean isBoxCell(int i) {
-		// TODO Auto-generated method stub
-		return false;
+
+	public boolean isWin(){
+		for (Symbol s : cells)
+			if (s == Symbol.BOX) return false;
+				return true;
 	}
 
 	/**
@@ -192,4 +201,12 @@ public class Board {
 				return true;
 	}
 
+	@Override
+	public int hashCode() {
+		int h = 0;
+		for(int i = 0; i < cells.length; i++) {
+			h ^= ( h << 5 ) + ( h >> 2 ) + cells[i].toChar();
+		}
+		return h;
+	}
 }
