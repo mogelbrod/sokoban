@@ -9,7 +9,7 @@ public class Board {
 	protected String path;
 
 	// Current player position
-	protected int playerPos;
+	protected int player;
 
 	Board(String boardRep, int width, int height) {
 		this.width = width;
@@ -57,46 +57,62 @@ public class Board {
 	}
 
 	private void updateBoard(Direction dir) {
-		cells[playerPos] = Symbol.FLOOR;
+		cells[player] = Symbol.FLOOR;
 		int maybeBoxPos = 0;
 		switch (dir) {
 		case UP:
-			//			System.out.print("\nMove player from " + playerPos);
-			playerPos -= width;
-			maybeBoxPos = playerPos - width;
+			//			System.out.print("\nMove player from " + player);
+			player -= width;
+			maybeBoxPos = player - width;
 
-			//			System.out.print(" to " + playerPos);
+			//			System.out.print(" to " + player);
 			break;
 		case DOWN:
-			//			System.out.print("\nMove player from " + playerPos);
-			playerPos += width;
-			maybeBoxPos = playerPos + width;
-			//			System.out.print(" to " + playerPos);
+			//			System.out.print("\nMove player from " + player);
+			player += width;
+			maybeBoxPos = player + width;
+			//			System.out.print(" to " + player);
 			break;
 		case LEFT:
-			//			System.out.print("\nMove player from " + playerPos);
-			playerPos--;
-			maybeBoxPos = playerPos - 1;
-			//			System.out.print(" to " + playerPos);
-			//			System.out.print(" to " + playerPos);
+			//			System.out.print("\nMove player from " + player);
+			player--;
+			maybeBoxPos = player - 1;
+			//			System.out.print(" to " + player);
+			//			System.out.print(" to " + player);
 			break;
 
 		case RIGHT:
-			//			System.out.print("\nMove player from " + playerPos);
-			playerPos++;
-			maybeBoxPos = playerPos + 1;
+			//			System.out.print("\nMove player from " + player);
+			player++;
+			maybeBoxPos = player + 1;
 
-			//			System.out.print(" to " + playerPos);
+			//			System.out.print(" to " + player);
 			break;
 		}
 
-
-		if (cells[playerPos] == Symbol.BOX)
+		if (cells[player] == Symbol.BOX)
 			cells[maybeBoxPos] = Symbol.BOX;
-		cells[playerPos] = Symbol.PLAYER;
+		cells[player] = Symbol.PLAYER;
 	}
 
+	public boolean move(Direction dir) {
+		// Restore cell at old player position
+		cells[player] = (at(player) == Symbol.PLAYER_GOAL) ? Symbol.GOAL : Symbol.FLOOR;
+		player = translatePos(player, dir);
 
+		Symbol to = at(player);
+
+		// TODO: try/catch array index out of bounds
+		// Move box?
+		if (to == Symbol.BOX || to == Symbol.BOX_GOAL) {
+			int boxDestination = translatePos(to, dir);
+			if (at(boxDestination) )
+			cells[] = (to == Symbol.GOAL) ? Symbol.BOX_GOAL : Symbol.BOX;
+		}
+
+		// Update cell at new player position
+		cells[player] = (to == Symbol.GOAL) ? Symbol.PLAYER_GOAL : Symbol.PLAYER;
+	}
 
 	/**
 	 * Returns a Vector instance with all possible player moves
@@ -105,7 +121,7 @@ public class Board {
 	public Vector<Direction> findPossibleMoves() {
 		Vector<Direction> moves = new Vector<Direction>(4);
 		for (Direction dir : Direction.values()) {
-			int to = translatePos(playerPos, dir);
+			int to = translatePos(player, dir);
 			if (isEmptyCell(to) ||
 					(at(to) == Symbol.BOX &&
 					isEmptyCell(translatePos(to, dir))))
@@ -113,52 +129,6 @@ public class Board {
 		}
 		return moves;
 	}
-
-	/**
-	 * Returns true if the cell at the specified position is empty,
-	 * and a valid target for movement.
-	 */
-
-
-	//DO FUCKING MOVE!
-	//	public Board move(Direction dir) {
-	//		Board board = new Board(cells.clone(), width, height);
-	//		// TODO: Do move
-	//		return board;
-	//	}
-
-	public int getWidth() {
-		return this.width;
-	}
-
-	public int getHeight() {
-		return this.height;
-	}
-
-	public Symbol[] getCells() {
-		return this.cells;
-	}
-
-	/**
-	 * Returns a string representation of this board.
-	 */
-	public String toString() {
-		StringBuilder sb = new StringBuilder();
-		for (int i = 0; i < cells.length; i++) {
-			if (i > 0 && i % width == 0) sb.append('\n');
-			sb.append(cells[i]);
-		}
-		return sb.toString();
-	}
-
-	/**
-	 * Outputs the string representation of this board to the console.
-	 */
-	public void write() {
-		System.out.println(toString());
-	}
-
-
 
 	/**
 	 * Returns true if the cell at the specified position is empty,
@@ -217,5 +187,36 @@ public class Board {
 	 */
 	public boolean isEOG() {
 		return false;
+	}
+
+	public int getWidth() {
+		return this.width;
+	}
+
+	public int getHeight() {
+		return this.height;
+	}
+
+	public Symbol[] getCells() {
+		return this.cells;
+	}
+
+	/**
+	 * Returns a string representation of this board.
+	 */
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i < cells.length; i++) {
+			if (i > 0 && i % width == 0) sb.append('\n');
+			sb.append(cells[i]);
+		}
+		return sb.toString();
+	}
+
+	/**
+	 * Outputs the string representation of this board to the console.
+	 */
+	public void write() {
+		System.out.println(toString());
 	}
 }
