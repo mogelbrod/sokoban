@@ -34,13 +34,13 @@ public class Client {
 				}
 				//here, we would store the row somewhere, to build our board
 				//in this demo, we just print it
-				System.out.println(lLine);
+//				System.out.println(lLine);
 				sb.append(lLine).append('\n');
 
 			}
 
             Board board = new Board(sb.toString(), width, height);
-           // board.write();
+            board.write();
             //now, we should find a solution to the sokoban
 
             Player p = new Player();

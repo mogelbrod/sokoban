@@ -26,4 +26,17 @@ public enum Symbol {
 		}
 		return "";
 	}
+	
+	public char toChar() {
+		switch (this) {
+			case WALL: return '#';
+			case PLAYER: return '@';
+			case PLAYER_GOAL: return '+';
+			case BOX: return '$';
+			case BOX_GOAL: return '*';
+			case GOAL: return '.';
+			case FLOOR: return ' ';
+		}
+		return 0;
+	}
 }

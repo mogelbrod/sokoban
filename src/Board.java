@@ -83,6 +83,9 @@ public class Board {
 		return cells[pos] == Symbol.GOAL;
 	}
 	
+	private boolean isFloor(int pos){
+		return cells[pos] == Symbol.FLOOR;
+	}
 	private void moveBox(int toPos) {
 		if (isGoal(toPos))
 			cells[toPos] = Symbol.BOX_GOAL;
@@ -105,13 +108,14 @@ public class Board {
 		} else if(boxOnGoal(newPlayerPos)) {
 			moveBox(moveBoxToIndex);
 			cells[newPlayerPos] = Symbol.PLAYER_GOAL;
-		} else if(isEmptyCell(newPlayerPos)) {
+		} else if(isFloor(newPlayerPos)) {
 			cells[newPlayerPos] = Symbol.PLAYER;
 		} else if(isGoal(newPlayerPos)) {
 			cells[newPlayerPos] = Symbol.PLAYER_GOAL;
 		}
 			
 		playerPos = newPlayerPos;
+//		write();
 	}
 
 	/**
@@ -171,9 +175,8 @@ public class Board {
 		for (Direction dir : Direction.values()) {
 			int to = translatePos(playerPos, dir);
 			if (isEmptyCell(to) ||
-					(at(to) == Symbol.BOX &&
-					isEmptyCell(translatePos(to, dir))) || 
-					(at(to) == Symbol.BOX && cells[translatePos(to, dir)] == Symbol.GOAL))
+					((at(to) == Symbol.BOX  || at(to) == Symbol.BOX_GOAL) &&
+					isEmptyCell(translatePos(to, dir))))
 				moves.add(dir);
 		}
 		return moves;

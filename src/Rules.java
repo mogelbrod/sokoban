@@ -20,11 +20,11 @@ public class Rules {
 				boxes.add(i);
 		}
 		
-		for (Integer numBox : boxes) {
-			updatePosition(numBox);
-			if(corner_rule(numBox))
-				return false;	
-		}
+//		for (int numBox : boxes) {
+//			updatePosition(numBox);
+//			if(corner_rule(numBox))
+//				return false;	
+//		}
 		return true;
 	}
 	

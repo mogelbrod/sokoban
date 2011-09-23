@@ -11,46 +11,42 @@ public class Player {
 	Player () {
 
 	}
-	
 	public String dfs(Board startState) {
 		stack.push(startState);
+		visited(startState.hashCode());
 
-		Board testState = startState;
 		while (!stack.isEmpty()) {
 			Board currentState = stack.peek();
-			testState = currentState;
 
-			if (currentState.isEOG()) {
+			if (currentState.isWin()) {
 				System.out.println(currentState.path);
 				return currentState.path;
 			}
 
 			Vector<Direction> moves = currentState.findPossibleMoves();
-			System.out.println(moves.size());
 
+			boolean noUnvisitedChildNodes = true;
 			if (moves.size() != 0) {
 				for (Direction d : moves) {
 					Board nextBoard = new Board(currentState, d);
-<<<<<<< HEAD
-					if(!visited(nextBoard.cells.hashCode())){
-						nextBoard.addDirectionToPath(d);
-						stack.push(nextBoard);
-=======
-					if(MASTER_CONTROL_TOWER.check(nextBoard.cells, nextBoard.getWidth())){
-						if(!visited(nextBoard.cells.hashCode())){
+
+					if(!visited(nextBoard.hashCode())){
+						noUnvisitedChildNodes = false;
+						if(MASTER_CONTROL_TOWER.check(nextBoard.cells, nextBoard.getWidth())){
 							nextBoard.addDirectionToPath(d);
 							stack.push(nextBoard);
-							System.out.println(stack.size());
 						}	
->>>>>>> 63542f687282b858910f1b32f176888dfc7c746e
-					}
 
+
+					} 
 				}
+
 			} else {
 				stack.pop();
 			}
+			if (noUnvisitedChildNodes)
+				stack.pop();
 		}
-		
 		return null;
 	}
 
@@ -69,10 +65,4 @@ public class Player {
 			return true;
 	}
 
-	//	Push the root node onto a stack.
-	//	Pop a node from the stack and examine it.
-	//	If the element sought is found in this node, quit the search and return a result.
-	//	Otherwise push all its successors (child nodes) that have not yet been discovered onto the stack.
-	//	If the stack is empty, every node in the tree has been examined - quit the search and return "not found".
-	//	If the stack is not empty, repeat from Step 2.
 }
