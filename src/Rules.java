@@ -48,7 +48,7 @@ public class Rules {
 		if(cells[position] == Symbol.BOX_GOAL)
 			return false;
 		
-		if(((UP == Symbol.WALL) ^ (DOWN == Symbol.WALL)) && (LEFT == Symbol.WALL ^ RIGHT == Symbol.WALL))
+		if(((UP == Symbol.WALL) || (DOWN == Symbol.WALL)) && (LEFT == Symbol.WALL || RIGHT == Symbol.WALL))
 			return true;
 		
 		
