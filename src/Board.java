@@ -63,15 +63,55 @@ public class Board {
 		}
 	}
 
+	private boolean playerOnGoal() {
+		return cells[playerPos] == Symbol.PLAYER_GOAL;
+	}
+	
+	private boolean playerOnFloor() {
+		return cells[playerPos] == Symbol.PLAYER;
+	}
+	
+	private boolean boxOnFloor(int i) {
+		return cells[i] == Symbol.BOX;
+	}
+	
+	private boolean boxOnGoal(int i) {
+		return cells[i] == Symbol.BOX_GOAL;
+	}
+	
+	private boolean isGoal(int pos) {
+		return cells[pos] == Symbol.GOAL;
+	}
+	
+	private void moveBox(int toPos) {
+		if (isGoal(toPos))
+			cells[toPos] = Symbol.BOX_GOAL;
+		else if (isEmptyCell(toPos))
+			cells[toPos] = Symbol.BOX;
+	}
+	
 	private void updateBoard(Direction dir) {
-		cells[playerPos] = Symbol.FLOOR;
-		int maybeBoxPos = 0;
-		playerPos = translatePos(playerPos, dir);
-		maybeBoxPos = translatePos(playerPos, dir);
-
-		if (cells[playerPos] == Symbol.BOX)
-			cells[maybeBoxPos] = Symbol.BOX;
-		cells[playerPos] = Symbol.PLAYER;
+		if (playerOnGoal())
+			cells[playerPos] = Symbol.GOAL;
+		else if (playerOnFloor())
+			cells[playerPos] = Symbol.FLOOR;
+		
+		int newPlayerPos = translatePos(playerPos, dir);
+		int moveBoxToIndex = translatePos(newPlayerPos, dir);
+		
+		if (boxOnFloor(newPlayerPos)) {
+			moveBox(moveBoxToIndex);
+			cells[newPlayerPos] = Symbol.PLAYER;
+		} else if(boxOnGoal(newPlayerPos)) {
+			moveBox(moveBoxToIndex);
+			cells[newPlayerPos] = Symbol.PLAYER_GOAL;
+		} else if(isEmptyCell(newPlayerPos)) {
+			cells[newPlayerPos] = Symbol.PLAYER;
+		} else if(isGoal(newPlayerPos)) {
+			cells[newPlayerPos] = Symbol.PLAYER_GOAL;
+		}
+			
+		playerPos = newPlayerPos;
 	}
 
 	/**
