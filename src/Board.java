@@ -49,7 +49,8 @@ public class Board {
 	 */
 	private void initBoard(Symbol[] cells, int width, int height, String path) {
 		// Set data
-		this.cells = cells;
+		this.cells = new Symbol[cells.length];
+		System.arraycopy(cells, 0, this.cells, 0, cells.length);
 		this.width = width;
 		this.height = height;
 		this.path = path;
@@ -193,6 +194,7 @@ public class Board {
 	/**
 	 * Returns a string representation of this board.
 	 */
+	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		for (int i = 0; i < cells.length; i++) {
