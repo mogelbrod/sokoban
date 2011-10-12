@@ -45,6 +45,8 @@ public class Rules {
 	private boolean corner_rule(int position){
 
 
+		if (position < 0 || position >= cells.length)
+			return true;
 		//If a goal is at the position do that move.
 		if(cells[position] == Symbol.BOX_GOAL)
 			return false;
