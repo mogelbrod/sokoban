@@ -10,6 +10,8 @@ public class Board {
 	// Save string path while searching through the game tree.
 	protected String path;
 
+	public int f, g; // Total and accumulated cost
+
 	// Current player position
 	protected int playerPos = -1;
 

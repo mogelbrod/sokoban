@@ -12,14 +12,16 @@ public class Player {
 	 * New IDA* implementation. {{{
 	 */
 	public String idaStar(Board start) {
-		int cutOff;
+		int cutOffLimit;
 
 		// Initialize starting board
-		cutOff = start.f = start.h = heuristicValue(start);
+		cutOffLimit = start.f = start.heuristic();
 		start.g = 0;
 
-		stack = new Stack<Board>();
+		Stack<Board> stack = new Stack<Board>();
 		stack.push(start);
+
+		Stack<Board> next = new Stack<Board>();
 
 		visited = new HashSet<Integer>();
 		visited(start.hashCode());
@@ -31,16 +33,36 @@ public class Player {
 				if (board.isWin())
 					return board.getPath();
 
-				if (board.f <= cutOff) {
+				if (board.f <= cutOffLimit) {
 					// Examine successors to current board
 					for (Direction dir : board.findPossibleMoves()) {
 						Board succ = new Board(board, dir);
-						succ.estimateValue(board.g);
+						succ.g = board.g + 1;
+						succ.f = succ.heuristic() + succ.g;
 
 						stack.push(succ);
 					}
+				} else {
+					next.push(board);
 				}
+			} // while stack has elements
+
+			if (next.isEmpty())
+				return "";
+
+			stack.clear();
+
+			// Calculate new cut off limit
+			cutOffLimit = Integer.MIN_VALUE;
+			for (Board b : next) {
+				if (b.f < cutOffLimit)
+					cutOffLimit = b.f;
+
+				// Queue next candidates
+				stack.push(b);
 			}
+
+			next.clear();
 		}
 	} // }}}
 
