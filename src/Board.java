@@ -230,8 +230,10 @@ public class Board {
 					d = t;
 					foundGoals.add(j);
 				} else {
-					d = (d < t && !foundGoals.contains(j)) ? d : t;
-					foundGoals.add(j);
+					if (d > t && !foundGoals.contains(j)) {
+						d = t;
+						foundGoals.add(j);
+					}
 				}
 			}
 			// PLAYER DISTANCES
