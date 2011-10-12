@@ -22,7 +22,7 @@ public class Rules {
 		if(boxes.size() > 0){
 			for (Integer numBox : boxes) {
 				updatePosition(numBox);
-				if(corner_rule(numBox))
+				if (corner_rule(numBox, 0))
 					return false;	
 			}	
 		}
@@ -42,37 +42,48 @@ public class Rules {
 	 * @param position - current position of item
 	 * @return
 	 */
-	private boolean corner_rule(int position){
+	private boolean corner_rule(int position, int d){
 
 
+		if (position < 0 || position >= cells.length)
+			return false;
 		//If a goal is at the position do that move.
 		if(cells[position] == Symbol.BOX_GOAL)
 			return false;
 		
 		if(((UP == Symbol.WALL) || (DOWN == Symbol.WALL)) && (LEFT == Symbol.WALL || RIGHT == Symbol.WALL))
-			return true;
+			return false;
 		
 		
 		
 		if((UP == Symbol.WALL || DOWN == Symbol.WALL) && (RIGHT == Symbol.BOX)){
-			if(corner_rule(position+1))
+			if (d == 1)
 				return true;
+			else
+				corner_rule(position+1, d + 1);
+
 		}
 		
 		
 		if((UP == Symbol.WALL || DOWN == Symbol.WALL) && (LEFT == Symbol.BOX)){
-			if(corner_rule(position-1))
+			if (d == 1)
 				return true;
+			else 
+				corner_rule(position-1, d + 1);
 		}
 		
 		if((LEFT == Symbol.WALL || RIGHT == Symbol.WALL) && (UP == Symbol.BOX)){
-			if(corner_rule(position-width))
+			if(d == 1)
 				return true;
+			else
+				corner_rule(position - width, d + 1);
 		}
 		
 		if((LEFT == Symbol.WALL || RIGHT == Symbol.WALL) && (DOWN == Symbol.BOX)){
-			if(corner_rule(position+width))
+			if (d == 1)
 				return true;
+			else
+				corner_rule(position + width, d + 1);
 		}
 		
 		return false;
