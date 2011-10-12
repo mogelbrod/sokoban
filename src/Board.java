@@ -2,15 +2,15 @@ import java.util.Vector;
 
 public class Board {
 	// Dimensions of board.
-	protected int width, height;
+	protected int width;
+	protected int height;
 	protected Symbol[] cells;
 	
 	// Save string path while searching through the game tree.
 	protected String path;
 
 	// Current player position
-	protected int player;
-
+	protected int playerPos = -1;
 	/**
 	 * Create new board with a predefined layout.
 	 */
@@ -22,15 +22,18 @@ public class Board {
 	 * Create new board with a predefined layout defined by a string.
 	 */
 	Board(String boardRep, int width, int height) {
+
 		cells = new Symbol[width*height];
 
 		int rowMul = 0;
 		for (String row : boardRep.split("\n")) {
-			for (int k = 0; k < row.length(); k++)
+			for (int k = 0; k < row.length(); k++) {
 				cells[rowMul+k] = Symbol.fromChar(row.charAt(k));
+				if (cells[rowMul+k] == Symbol.PLAYER || cells[rowMul+k] == Symbol.PLAYER_GOAL)
+					playerPos = rowMul+k;
+			}
 			rowMul += width;
 		}
-
 		initBoard(cells, width, height, "");
 	}
 
@@ -39,7 +42,8 @@ public class Board {
 	 * player in the specified direction.
 	 */
 	Board(Board board, Direction dir) {
-		initBoard(board.getCells(), board.getWidth(), board.getHeight(), board.getPath());
+		initBoard(board.cells, board.width, board.height, board.path);
+		this.playerPos = board.playerPos;
 		move(dir);
 	}
 
@@ -54,39 +58,39 @@ public class Board {
 		this.width = width;
 		this.height = height;
 		this.path = path;
+	}
 
-		// Set player position
-		player = -1;
-		for (int i = 0; i < cells.length; i++)
-			if (cells[i] == Symbol.PLAYER || cells[i] == Symbol.PLAYER_GOAL)
-				player = i;
+	private boolean playerOnGoal() {
+		return cells[playerPos] == Symbol.PLAYER_GOAL;
 	}
 
 	/**
 	 * Moves the player piece on this board, updating the position of it,
 	 * and any box it collides with.
 	 */
-	public Board move(Direction dir) {
-		// Restore cell at old player position
-		cells[player] = (at(player) == Symbol.PLAYER_GOAL) ? Symbol.GOAL : Symbol.FLOOR;
-		player = translatePos(player, dir);
-
-		Symbol to = at(player);
-
-		// TODO: try/catch array index out of bounds
-		// Move box?
-		if (to == Symbol.BOX || to == Symbol.BOX_GOAL) {
-			int boxDest = translatePos(player, dir);
-			cells[boxDest] = (at(boxDest) == Symbol.GOAL) ? Symbol.BOX_GOAL : Symbol.BOX;
+	private void move(Direction dir) {
+		cells[playerPos] = (playerOnGoal()) ? Symbol.GOAL : Symbol.FLOOR;
+		
+		int newPlayerPos = translatePos(playerPos, dir);
+		int moveBoxToIndex = translatePos(newPlayerPos, dir);
+		
+		if (cells[newPlayerPos] == Symbol.BOX || cells[newPlayerPos] == Symbol.BOX_GOAL) {
+			cells[moveBoxToIndex] = (cells[moveBoxToIndex] == Symbol.GOAL) ? Symbol.BOX_GOAL : Symbol.BOX;
+			cells[newPlayerPos] = (cells[newPlayerPos] == Symbol.BOX) ? Symbol.PLAYER : Symbol.PLAYER_GOAL;
+		} else {
+			cells[newPlayerPos] = (cells[newPlayerPos] == Symbol.GOAL) ? Symbol.PLAYER_GOAL : Symbol.PLAYER;
 		}
 
-		// Update cell at new player position
-		cells[player] = (to == Symbol.GOAL) ? Symbol.PLAYER_GOAL : Symbol.PLAYER;
-
-		// Append move to path
+		playerPos = newPlayerPos;
 		path += dir.toString();
+	}
 
-		return this;
+
+	/**
+	 * Outputs the string representation of this board to the console.
+	 */
+	public void write() {
+		System.out.println(toString());
 	}
 
 	/**
@@ -95,15 +99,17 @@ public class Board {
 	 */
 	public Vector<Direction> findPossibleMoves() {
 		Vector<Direction> moves = new Vector<Direction>(4);
+
 		for (Direction dir : Direction.values()) {
-			int to = translatePos(player, dir);
+			int to = translatePos(playerPos, dir);
 			if (isEmptyCell(to) ||
-					(at(to) == Symbol.BOX &&
+					((at(to) == Symbol.BOX  || at(to) == Symbol.BOX_GOAL) &&
 					isEmptyCell(translatePos(to, dir))))
 				moves.add(dir);
 		}
 		return moves;
 	}
+
 
 	/**
 	 * Returns true if the cell at the specified position is empty,
@@ -174,40 +180,30 @@ public class Board {
 		}
 		return h;
 	}
-
 	public int getWidth() {
 		return this.width;
 	}
-
+	
 	public int getHeight() {
 		return this.height;
 	}
-
-	public String getPath() {
-		return this.path;
-	}
-
+	
 	public Symbol[] getCells() {
 		return this.cells;
 	}
-
+	
 	/**
 	 * Returns a string representation of this board.
 	 */
-	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		for (int i = 0; i < cells.length; i++) {
 			if (i > 0 && i % width == 0) sb.append('\n');
-			sb.append(cells[i]);
+			if (cells[i] != null)
+				sb.append(cells[i]);
+			else
+				sb.append(" ");
 		}
 		return sb.toString();
-	}
-
-	/**
-	 * Outputs the string representation of this board to the console.
-	 */
-	public void write() {
-		System.out.println(toString());
 	}
 }
