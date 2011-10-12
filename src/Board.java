@@ -11,6 +11,7 @@ public class Board {
 
 	// Current player position
 	protected int playerPos = -1;
+
 	/**
 	 * Create new board with a predefined layout.
 	 */
@@ -22,7 +23,6 @@ public class Board {
 	 * Create new board with a predefined layout defined by a string.
 	 */
 	Board(String boardRep, int width, int height) {
-
 		cells = new Symbol[width*height];
 
 		int rowMul = 0;
@@ -34,6 +34,7 @@ public class Board {
 			}
 			rowMul += width;
 		}
+
 		initBoard(cells, width, height, "");
 	}
 
@@ -42,7 +43,7 @@ public class Board {
 	 * player in the specified direction.
 	 */
 	Board(Board board, Direction dir) {
-		initBoard(board.cells, board.width, board.height, board.path);
+		initBoard(board.getCells(), board.getWidth(), board.getHeight(), board.getPath());
 		this.playerPos = board.playerPos;
 		move(dir);
 	}
@@ -60,16 +61,12 @@ public class Board {
 		this.path = path;
 	}
 
-	private boolean playerOnGoal() {
-		return cells[playerPos] == Symbol.PLAYER_GOAL;
-	}
-
 	/**
 	 * Moves the player piece on this board, updating the position of it,
 	 * and any box it collides with.
 	 */
 	private void move(Direction dir) {
-		cells[playerPos] = (playerOnGoal()) ? Symbol.GOAL : Symbol.FLOOR;
+		cells[playerPos] = (cells[playerPos] == Symbol.PLAYER_GOAL) ? Symbol.GOAL : Symbol.FLOOR;
 		
 		int newPlayerPos = translatePos(playerPos, dir);
 		int moveBoxToIndex = translatePos(newPlayerPos, dir);
@@ -83,14 +80,6 @@ public class Board {
 
 		playerPos = newPlayerPos;
 		path += dir.toString();
-	}
-
-
-	/**
-	 * Outputs the string representation of this board to the console.
-	 */
-	public void write() {
-		System.out.println(toString());
 	}
 
 	/**
@@ -155,31 +144,26 @@ public class Board {
 		return at(translatePos(pos, dir));
 	}
 
-
-	public boolean isWin(){
-		for (Symbol s : cells)
-			if (s == Symbol.BOX) return false;
-				return true;
-	}
-
 	/**
 	 * Returns true if this board represents a finished game,
 	 * where all boxes are placed on goals.
 	 */
-	public boolean isEOG() {
+	public boolean isWin() {
 		for (Symbol s : cells)
-			if (s == Symbol.BOX) return false;
-				return true;
+			if (s == Symbol.BOX)
+				return false;
+		return true;
 	}
 
 	@Override
 	public int hashCode() {
-		int h = 0;
-		for(int i = 0; i < cells.length; i++) {
+		int h = 0, len = cells.length;
+		for (int i = 0; i < len; ++i) {
 			h ^= ( h << 5 ) + ( h >> 2 ) + cells[i].toChar();
 		}
 		return h;
 	}
+
 	public int getWidth() {
 		return this.width;
 	}
@@ -190,6 +174,10 @@ public class Board {
 	
 	public Symbol[] getCells() {
 		return this.cells;
+	}
+	
+	public String getPath() {
+		return this.path;
 	}
 	
 	/**
@@ -205,5 +193,12 @@ public class Board {
 				sb.append(" ");
 		}
 		return sb.toString();
+	}
+
+	/**
+	 * Outputs the string representation of this board to the console.
+	 */
+	public void write() {
+		System.out.println(toString());
 	}
 }
