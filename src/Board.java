@@ -5,7 +5,8 @@ public class Board {
 	protected int width;
 	protected int height;
 	protected Symbol[] cells;
-	
+	private Vector<Integer> boxes = new Vector<Integer>();
+	private Vector<Integer> goals = new Vector<Integer>();
 	// Save string path while searching through the game tree.
 	protected String path;
 
@@ -31,6 +32,14 @@ public class Board {
 				cells[rowMul+k] = Symbol.fromChar(row.charAt(k));
 				if (cells[rowMul+k] == Symbol.PLAYER || cells[rowMul+k] == Symbol.PLAYER_GOAL)
 					playerPos = rowMul+k;
+				if (cells[rowMul + k] == Symbol.BOX
+						|| cells[rowMul + k] == Symbol.BOX_GOAL)
+					boxes.add(rowMul + k);
+				if (cells[rowMul + k] == Symbol.GOAL
+						|| cells[rowMul + k] == Symbol.BOX_GOAL
+						|| cells[rowMul + k] == Symbol.PLAYER_GOAL)
+					goals.add(rowMul+k);
+				
 			}
 			rowMul += width;
 		}
@@ -45,6 +54,8 @@ public class Board {
 	Board(Board board, Direction dir) {
 		initBoard(board.getCells(), board.getWidth(), board.getHeight(), board.getPath());
 		this.playerPos = board.playerPos;
+		this.boxes = new Vector<Integer>(board.boxes);
+		this.goals = new Vector<Integer>(board.goals);
 		move(dir);
 	}
 
@@ -73,6 +84,8 @@ public class Board {
 		
 		if (cells[newPlayerPos] == Symbol.BOX || cells[newPlayerPos] == Symbol.BOX_GOAL) {
 			cells[moveBoxToIndex] = (cells[moveBoxToIndex] == Symbol.GOAL) ? Symbol.BOX_GOAL : Symbol.BOX;
+			boxes.remove((Object) newPlayerPos);
+			boxes.add(moveBoxToIndex);
 			cells[newPlayerPos] = (cells[newPlayerPos] == Symbol.BOX) ? Symbol.PLAYER : Symbol.PLAYER_GOAL;
 		} else {
 			cells[newPlayerPos] = (cells[newPlayerPos] == Symbol.GOAL) ? Symbol.PLAYER_GOAL : Symbol.PLAYER;
@@ -200,5 +213,27 @@ public class Board {
 	 */
 	public void write() {
 		System.out.println(toString());
+	}
+
+	public int heuristic() {
+		int h = 0;
+
+		// BOX DISTANCES
+		for (int i : boxes) {
+			int d = -1;
+			for (int j : goals) {
+				int t = Math.abs(i % width - j % width)
+						+ Math.abs(i / width - j / width);
+				if (d == -1)
+					d = t;
+				else
+					d = (d < t) ? d : t;
+			}
+			// PLAYER DISTANCES
+			h += Math.abs(i % width - playerPos % width)
+					+ Math.abs(i / width - playerPos / width) + d;
+		}
+
+		return h;
 	}
 }
