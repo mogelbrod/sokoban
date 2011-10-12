@@ -9,6 +9,50 @@ public class Player {
 
 	private Stack<Board> stack = new Stack<Board>();
 
+	// IDA* variables
+	private int costLimit;
+
+	/**
+	 * New IDA* implementation. {{{
+	 */
+	public String idaStar(Board start) {
+		// Starting cost limit
+		costLimit = heuristicValue(start);
+
+		while (true) {
+			String path = limitedDFS(0, start, costLimit, "");
+
+			// Solution found
+			if (path != null)
+				return path;
+
+			// No solution
+			if (costLimit == Integer.MAX_VALUE)
+				return  "";
+		}
+	} // }}}
+
+	protected String limitedDFS(int startCost, Board board, int costLimit, String currentPath) {
+		int minCost = startCost + heuristicValue(board);
+
+		// Increase minimum cost if exceeded, then try again
+		if (minCost > costLimit) {
+			costLimit = minCost;
+			return null;
+		}
+
+		if (board.isWin()) {
+			return currentPath;
+		}
+
+		int nextCostLimit = Integer.MAX_VALUE;
+
+		for (Direction move : board.findPossibleMoves()) {
+			int newStartCost = startCost + 0; // TODO: + edge cost for this move
+			// TODO
+		}
+	}
+
 	/**
 	 * Original DFS implementation. {{{
 	 */
