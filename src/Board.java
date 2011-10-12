@@ -201,4 +201,15 @@ public class Board {
 	public void write() {
 		System.out.println(toString());
 	}
+
+	// IDA* cost for this node.
+	public int f; // = g + h
+	public int g; // Accumulated cost
+	public int h; // Estimate of remaining cost
+
+	public estimateValue(int accumulated) {
+		this.g = accumulated + 0; // TODO: 0 = heuristic value of this node (cost)
+		this.h = 0; //  TODO: estimation of remaining cost to a win
+		this.f = this.g + this.h;
+	}
 }
