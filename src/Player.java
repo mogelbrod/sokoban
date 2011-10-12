@@ -5,59 +5,52 @@ import java.util.Vector;
 public class Player {
 
 	private Rules MASTER_CONTROL_TOWER = new Rules();
-	private HashSet<Integer> visited = new HashSet<Integer>();
-
-	private Stack<Board> stack = new Stack<Board>();
-
-	// IDA* variables
-	private int costLimit;
+	private HashSet<Integer> visited;
+	private Stack<Board> stack;
 
 	/**
 	 * New IDA* implementation. {{{
 	 */
 	public String idaStar(Board start) {
-		// Starting cost limit
-		costLimit = heuristicValue(start);
+		int cutOff;
+
+		// Initialize starting board
+		cutOff = start.f = start.h = heuristicValue(start);
+		start.g = 0;
+
+		stack = new Stack<Board>();
+		stack.push(start);
+
+		visited = new HashSet<Integer>();
+		visited(start.hashCode());
 
 		while (true) {
-			String path = limitedDFS(0, start, costLimit, "");
+			while (!stack.isEmpty()) {
+				Board board = stack.pop();
 
-			// Solution found
-			if (path != null)
-				return path;
+				if (board.isWin())
+					return board.getPath();
 
-			// No solution
-			if (costLimit == Integer.MAX_VALUE)
-				return  "";
+				if (board.f <= cutOff) {
+					// Examine successors to current board
+					for (Direction dir : board.findPossibleMoves()) {
+						Board succ = new Board(board, dir);
+						succ.estimateValue(board.g);
+
+						stack.push(succ);
+					}
+				}
+			}
 		}
 	} // }}}
-
-	protected String limitedDFS(int startCost, Board board, int costLimit, String currentPath) {
-		int minCost = startCost + heuristicValue(board);
-
-		// Increase minimum cost if exceeded, then try again
-		if (minCost > costLimit) {
-			costLimit = minCost;
-			return null;
-		}
-
-		if (board.isWin()) {
-			return currentPath;
-		}
-
-		int nextCostLimit = Integer.MAX_VALUE;
-
-		for (Direction move : board.findPossibleMoves()) {
-			int newStartCost = startCost + 0; // TODO: + edge cost for this move
-			// TODO
-		}
-	}
 
 	/**
 	 * Original DFS implementation. {{{
 	 */
 	public String dfs(Board startState) {
+		stack = new Stack<Board>();
 		stack.push(startState);
+		visited = new HashSet<Integer>();
 		visited(startState.hashCode());
 
 		while (!stack.isEmpty()) {
