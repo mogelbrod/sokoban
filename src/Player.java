@@ -5,15 +5,52 @@ import java.util.Vector;
 public class Player {
 
 	private Rules MASTER_CONTROL_TOWER = new Rules();
-	private HashSet<Integer> visited = new HashSet<Integer>();
+	private HashSet<Integer> visited;
+	private Stack<Board> stack;
 
-	private Stack<Board> stack = new Stack<Board>();
+	/**
+	 * New IDA* implementation. {{{
+	 */
+	public String idaStar(Board start) {
+		int cutOff;
+
+		// Initialize starting board
+		cutOff = start.f = start.h = heuristicValue(start);
+		start.g = 0;
+
+		stack = new Stack<Board>();
+		stack.push(start);
+
+		visited = new HashSet<Integer>();
+		visited(start.hashCode());
+
+		while (true) {
+			while (!stack.isEmpty()) {
+				Board board = stack.pop();
+
+				if (board.isWin())
+					return board.getPath();
+
+				if (board.f <= cutOff) {
+					// Examine successors to current board
+					for (Direction dir : board.findPossibleMoves()) {
+						Board succ = new Board(board, dir);
+						succ.estimateValue(board.g);
+
+						stack.push(succ);
+					}
+				}
+			}
+		}
+	} // }}}
 
 	/**
 	 * Original DFS implementation. {{{
 	 */
 	public String dfs(Board startState) {
+		stack = new Stack<Board>();
 		stack.push(startState);
+		visited = new HashSet<Integer>();
 		visited(startState.hashCode());
 
 		while (!stack.isEmpty()) {
