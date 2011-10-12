@@ -5,12 +5,13 @@ import java.util.Vector;
 public class Player {
 
 	private Rules MASTER_CONTROL_TOWER = new Rules();
-	private Stack<Board> stack = new Stack<Board>();
 	private HashSet<Integer> visited = new HashSet<Integer>();
 
-	Player () {
-	}
+	private Stack<Board> stack = new Stack<Board>();
 
+	/**
+	 * Original DFS implementation. {{{
+	 */
 	public String dfs(Board startState) {
 		stack.push(startState);
 		visited(startState.hashCode());
@@ -47,21 +48,15 @@ public class Player {
 				stack.pop();
 		}
 		return null;
-	}
+	} // }}}
 
-
-	/*
+	/**
 	 * Checks if a state has been visited before.
 	 * @param: hashCode of Board.cells.hashCode()
-	 * returns false iff not visited else true
-	 * 
+	 * returns false iff not visited else true.
 	 */
-	private boolean visited(int hashCode){
+	private boolean visited(int hashCode) {
 		//.add returns true if hashCode was added (meaning hashCode haven't been added before)
-		if(visited.add(hashCode))
-			return false;
-		else
-			return true;
+		return !visited.add(hashCode);
 	}
-
 }
