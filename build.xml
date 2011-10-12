@@ -8,7 +8,7 @@
 		<java classname="${main-class}">
 			<arg value="130.237.218.85"/>
 			<arg value="7777"/>
-			<arg value="1"/>
+			<arg value="2"/>
 			<classpath location="${classes.dir}" path="${java.class.path}" />
 		</java>
 	</target>

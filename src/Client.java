@@ -37,17 +37,12 @@ public class Client {
 
 			Board board = new Board(sb.toString(), width, height);
 			board.write();
-			//now, we should find a solution to the sokoban
 
 			Player p = new Player();
-			String solution = p.dfs(board);
-			//we've found our solution (this is actually the solution to board 1)
-			//String solution = "U R R U U L D L L U L L D R R R R L D D R U R U D L L U R";
-			//these formats are also valid:
-			//String solution="URRUULDLLULLDRRRRLDDRURUDLLUR";
-			//String solution="0 3 3 0 0 2 1 2 2 0 2 2 1 3 3 3 3 2 1 1 3 0 3 0 1 2 2 0 3";
+			String solution = p.idaStar(board);
 
 			//send the solution to the server
+			System.out.println(solution);
 			lOut.println(solution);
 			lOut.flush();
 
