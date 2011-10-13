@@ -11,10 +11,8 @@ public class Player {
 	 * A* implementation. {{{
 	 */
 	public String aStar(Board start) {
-		int cutOffLimit;
-
 		// Initialize starting board
-		cutOffLimit = start.f = start.heuristic();
+		start.f = start.heuristic();
 		start.g = 0;
 
 		PriorityQueue<Board> queue = new PriorityQueue<Board>();

@@ -6,8 +6,11 @@ import java.lang.StringBuilder;
 public class Client {
 	public static void main(String[] pArgs) {
 		if (pArgs.length < 3) {
-			System.out.println("usage: java Client host port boardnum");
-			return;
+			String[] args = new String[3];
+			args[0] = "130.237.218.85";
+			args[1] = pArgs[0];
+			args[2] = pArgs[1];
+			pArgs = args;
 		}
 
 		try {
