@@ -6,7 +6,7 @@
 
   <target name="compile" depends="init" description="compile the source">
 		<javac srcdir="${src.dir}" destdir="${classes.dir}"
-		       encoding="utf8" includeantruntime="false">
+				encoding="utf8" includeantruntime="false" debug="on">
 			<compilerarg value="-Xlint"/>
 		</javac>
   </target>
