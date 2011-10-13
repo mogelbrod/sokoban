@@ -6,8 +6,10 @@ public class Board implements Comparable<Board> {
 	protected int width;
 	protected int height;
 	protected Symbol[] cells;
+
 	private Vector<Integer> boxes = new Vector<Integer>();
 	private Vector<Integer> goals = new Vector<Integer>();
+
 	// Save string path while searching through the game tree.
 	protected String path;
 
@@ -261,7 +263,7 @@ public class Board implements Comparable<Board> {
 			int d = -1;
 			for (int j : goals) {
 				int t = Math.abs(i % width - j % width)
-						+ Math.abs(i / width - j / width);
+				      + Math.abs(i / width - j / width);
 				if (d == -1 && !foundGoals.contains(j)) {
 					d = t;
 					foundGoals.add(j);

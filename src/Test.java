@@ -8,6 +8,7 @@ public class Test {
 		try {
 			Board b = new Board(readFile("testboard.txt"), 8, 5);
 			b.write();
+
 			for (Direction dir : b.findPossibleMoves())
 				System.out.println(dir);
 		} catch (Exception e) {
