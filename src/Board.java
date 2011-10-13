@@ -20,59 +20,71 @@ public class Board implements Comparable<Board> {
 	 * Create new board with a predefined layout.
 	 */
 	Board(Symbol[] cells, int width, int height) {
-		initBoard(cells, width, height, "");
+		this.width = width;
+		this.height = height;
+		this.path = "";
+		copyCells(cells);
 	}
 
 	/**
 	 * Create new board with a predefined layout defined by a string.
 	 */
 	Board(String boardRep, int width, int height) {
-		cells = new Symbol[width*height];
+		this.width = width;
+		this.height = height;
+		this.path = "";
+		this.cells = new Symbol[width * height];
 
 		int rowMul = 0;
 		for (String row : boardRep.split("\n")) {
 			for (int k = 0; k < row.length(); k++) {
-				cells[rowMul+k] = Symbol.fromChar(row.charAt(k));
-				if (cells[rowMul+k] == Symbol.PLAYER || cells[rowMul+k] == Symbol.PLAYER_GOAL)
-					playerPos = rowMul+k;
-				if (cells[rowMul + k] == Symbol.BOX
-						|| cells[rowMul + k] == Symbol.BOX_GOAL)
+				Symbol c = Symbol.fromChar(row.charAt(k));
+				if (c == Symbol.PLAYER || c == Symbol.PLAYER_GOAL)
+					this.playerPos = rowMul+k;
+				else if (c == Symbol.BOX || c == Symbol.BOX_GOAL)
 					boxes.add(rowMul + k);
-				if (cells[rowMul + k] == Symbol.GOAL
-						|| cells[rowMul + k] == Symbol.BOX_GOAL
-						|| cells[rowMul + k] == Symbol.PLAYER_GOAL)
+				if (c == Symbol.GOAL || c == Symbol.BOX_GOAL || c == Symbol.PLAYER_GOAL)
 					goals.add(rowMul+k);
-				
+
+				cells[rowMul+k] = c;
 			}
 			rowMul += width;
 		}
 
-		initBoard(cells, width, height, "");
+		// Corner detection
+		for (int i = 0; i < cells.length; ++i) {
+			if (cells[i] != Symbol.FLOOR)
+				continue;
+
+			// (A&B) v (B&C) v (C&D) v (A&D) ~> (B v D) & (A v C) 
+			if ((at(i, Direction.UP) == Symbol.WALL || at(i, Direction.DOWN) == Symbol.WALL) &&
+			    (at(i, Direction.LEFT) == Symbol.WALL || at(i, Direction.RIGHT) == Symbol.WALL)) {
+				cells[i] = Symbol.CORNER;
+			}
+		}
 	}
 
 	/**
 	 * Create new board with a predefined layout and immidiately move the
 	 * player in the specified direction.
 	 */
-	Board(Board board, Direction dir) {
-		initBoard(board.getCells(), board.getWidth(), board.getHeight(), board.getPath());
-		this.playerPos = board.playerPos;
+	public Board(Board board, Direction dir) {
+		this.width = board.getWidth();
+		this.height = board.getHeight();
+		this.path = board.getPath();
+		this.playerPos = board.getPlayerPos();
+
+		copyCells(board.getCells());
+
 		this.boxes = new Vector<Integer>(board.boxes);
 		this.goals = new Vector<Integer>(board.goals);
+
 		move(dir);
 	}
 
-	/**
-	 * Initialize board data for this board instance.
-	 * The cells argument should be clone()d if the board is to be copied.
-	 */
-	private void initBoard(Symbol[] cells, int width, int height, String path) {
-		// Set data
+	private void copyCells(Symbol[] cells) {
 		this.cells = new Symbol[cells.length];
 		System.arraycopy(cells, 0, this.cells, 0, cells.length);
-		this.width = width;
-		this.height = height;
-		this.path = path;
 	}
 
 	/**
@@ -80,7 +92,17 @@ public class Board implements Comparable<Board> {
 	 * and any box it collides with.
 	 */
 	private void move(Direction dir) {
-		cells[playerPos] = (cells[playerPos] == Symbol.PLAYER_GOAL) ? Symbol.GOAL : Symbol.FLOOR;
+		switch (cells[playerPos]) {
+			case PLAYER:
+				cells[playerPos] = Symbol.FLOOR;
+				break;
+			case PLAYER_GOAL:
+				cells[playerPos] = Symbol.GOAL;
+				break;
+			case PLAYER_CORNER:
+				cells[playerPos] = Symbol.CORNER;
+				break;
+		}
 		
 		int newPos = translatePos(playerPos, dir);
 		int dst = translatePos(newPos, dir);
@@ -107,9 +129,9 @@ public class Board implements Comparable<Board> {
 
 		for (Direction dir : Direction.values()) {
 			int to = translatePos(playerPos, dir);
-			if (isEmptyCell(to) ||
-					((at(to) == Symbol.BOX  || at(to) == Symbol.BOX_GOAL) &&
-					isEmptyCell(translatePos(to, dir))))
+			if (isEmptyCell(to) || // can move to destination
+					((at(to) == Symbol.BOX || at(to) == Symbol.BOX_GOAL) &&
+					isEmptyCell(translatePos(to, dir), false))) // a box which can be moved
 				moves.add(dir);
 		}
 		return moves;
@@ -120,11 +142,16 @@ public class Board implements Comparable<Board> {
 	 * Returns true if the cell at the specified position is empty,
 	 * and a valid target for movement.
 	 */
-	public boolean isEmptyCell(int pos) {
+	public boolean isEmptyCell(int pos, boolean allowCorner) {
 		Symbol c = at(pos);
 		if (c == Symbol.FLOOR || c == Symbol.GOAL)
 			return true;
+		if (allowCorner && c == Symbol.CORNER)
+			return true;
 		return false;
+	}
+	public boolean isEmptyCell(int pos) {
+		return isEmptyCell(pos, true);
 	}
 
 	/**
@@ -141,7 +168,7 @@ public class Board implements Comparable<Board> {
 		case RIGHT:
 			return (pos + 1);
 		}
-		return pos;
+		return 0;
 	}
 
 	/**
@@ -196,6 +223,10 @@ public class Board implements Comparable<Board> {
 		return this.path;
 	}
 	
+	public int getPlayerPos() {
+		return this.playerPos;
+	}
+	
 	/**
 	 * Returns a string representation of this board.
 	 */
@@ -225,8 +256,8 @@ public class Board implements Comparable<Board> {
 		int h = 0;
 
 		HashSet<Integer> foundGoals = new HashSet<Integer>();
-		// BOX DISTANCES
 		for (int i : boxes) {
+			// Box distances
 			int d = -1;
 			for (int j : goals) {
 				int t = Math.abs(i % width - j % width)
@@ -241,12 +272,13 @@ public class Board implements Comparable<Board> {
 					}
 				}
 			}
-			// PLAYER DISTANCES
+
+			// Player distances
 			h += (cells[i] == Symbol.BOX_GOAL) ? d : Math.abs(i % width
 					- playerPos
 					% width)
 					+ Math.abs(i / width - playerPos / width) + d;
-		}
+		} // each box
 
 		return h;
 	}
