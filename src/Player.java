@@ -85,7 +85,7 @@ public class Player {
 				for (Direction d : moves) {
 					Board nextBoard = new Board(currentState, d);
 
-					if (!visited(nextBoard)){
+					if (!visited(nextBoard)) {
 						noUnvisitedChildNodes = false;
 						if (MASTER_CONTROL_TOWER.check(nextBoard.cells, nextBoard.getWidth())){
 							stack.push(nextBoard);
