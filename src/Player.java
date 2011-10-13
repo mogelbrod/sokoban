@@ -24,22 +24,27 @@ public class Player {
 		Stack<Board> next = new Stack<Board>();
 
 		visited = new HashSet<Integer>();
-		visited(start.hashCode());
 
 		while (true) {
 			while (!stack.isEmpty()) {
 				Board board = stack.pop();
+				//System.out.println("cutOff=" + cutOffLimit + ", f=" + board.f + ", g=" + board.g);
 
 				if (board.isWin())
 					return board.getPath();
 
 				if (board.f <= cutOffLimit) {
+					visited(board);
+
 					// Examine successors to current board
 					for (Direction dir : board.findPossibleMoves()) {
 						Board succ = new Board(board, dir);
+
+						if (visited(succ))
+							continue;
+
 						succ.g = board.g + 1;
 						succ.f = succ.heuristic() + succ.g;
-
 						stack.push(succ);
 					}
 				} else {
@@ -53,7 +58,7 @@ public class Player {
 			stack.clear();
 
 			// Calculate new cut off limit
-			cutOffLimit = Integer.MIN_VALUE;
+			cutOffLimit = Integer.MAX_VALUE;
 			for (Board b : next) {
 				if (b.f < cutOffLimit)
 					cutOffLimit = b.f;
@@ -73,7 +78,7 @@ public class Player {
 		stack = new Stack<Board>();
 		stack.push(startState);
 		visited = new HashSet<Integer>();
-		visited(startState.hashCode());
+		visited(startState);
 
 		while (!stack.isEmpty()) {
 			Board currentState = stack.peek();
@@ -90,7 +95,7 @@ public class Player {
 				for (Direction d : moves) {
 					Board nextBoard = new Board(currentState, d);
 
-					if(!visited(nextBoard.hashCode())){
+					if(!visited(nextBoard)){
 						noUnvisitedChildNodes = false;
 						if(MASTER_CONTROL_TOWER.check(nextBoard.cells, nextBoard.getWidth())){
 							stack.push(nextBoard);
@@ -114,8 +119,8 @@ public class Player {
 	 * @param: hashCode of Board.cells.hashCode()
 	 * returns false iff not visited else true.
 	 */
-	private boolean visited(int hashCode) {
+	private boolean visited(Board board) {
 		//.add returns true if hashCode was added (meaning hashCode haven't been added before)
-		return !visited.add(hashCode);
+		return !visited.add(board.hashCode());
 	}
 }
