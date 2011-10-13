@@ -29,10 +29,10 @@ public class Client {
 			StringBuilder sb = new StringBuilder();
 
 			//read each row
-			for(int i = 0; i < height; i++) {
+			for (int i = 0; i < height; i++) {
 				lLine = lIn.readLine();
-				if(lLine != null){
-					if(lLine.length() > width)
+				if (lLine != null){
+					if (lLine.length() > width)
 						width = lLine.length();
 				}
 				sb.append(lLine).append('\n');
