@@ -1,7 +1,7 @@
 import java.util.HashSet;
 import java.util.Vector;
 
-public class Board {
+public class Board implements Comparable<Board> {
 	// Dimensions of board.
 	protected int width;
 	protected int height;
@@ -246,5 +246,9 @@ public class Board {
 		}
 
 		return h;
+	}
+
+	public int compareTo(Board other) {
+		return this.f - other.f;
 	}
 }
