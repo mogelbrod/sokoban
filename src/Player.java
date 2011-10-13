@@ -1,10 +1,9 @@
 import java.util.HashSet;
+import java.util.PriorityQueue;
 import java.util.Stack;
 import java.util.Vector;
-import java.util.PriorityQueue;
 
 public class Player {
-	private Rules MASTER_CONTROL_TOWER = new Rules();
 	private HashSet<Integer> visited;
 
 	/**
@@ -15,7 +14,7 @@ public class Player {
 		start.f = start.heuristic();
 		start.g = 0;
 
-		PriorityQueue<Board> queue = new PriorityQueue<Board>();
+		PriorityQueue<Board> queue = new PriorityQueue<Board>(8192);
 		queue.add(start);
 
 		visited = new HashSet<Integer>();
@@ -125,6 +124,7 @@ public class Player {
 	 * DFS implementation. {{{
 	 */
 	public String dfs(Board startState) {
+		Rules MASTER_CONTROL_TOWER = new Rules();
 		Stack<Board> stack = new Stack<Board>();
 		stack.push(startState);
 
@@ -146,11 +146,14 @@ public class Player {
 				for (Direction d : moves) {
 					Board nextBoard = new Board(currentState, d);
 
+					System.out.println(nextBoard.toString());
 					if (!visited(nextBoard)) {
 						noUnvisitedChildNodes = false;
-						if (MASTER_CONTROL_TOWER.check(nextBoard.cells, nextBoard.getWidth())){
+						if (MASTER_CONTROL_TOWER.check(nextBoard)) {
 							stack.push(nextBoard);
-						}	
+						} else {
+							int a = 0;
+						}
 					} 
 				}
 			} else {

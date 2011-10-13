@@ -1,5 +1,5 @@
-import java.util.HashSet;
 import java.util.Vector;
+import java.util.HashSet;
 
 public class Board implements Comparable<Board> {
 	// Dimensions of board.
