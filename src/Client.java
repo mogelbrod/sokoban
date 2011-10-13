@@ -41,7 +41,7 @@ public class Client {
 			}
 
 			Board board = new Board(sb.toString(), width, height);
-			board.write();
+			//board.write();
 
 			Player p = new Player();
 			String solution = p.idaStar(board);
