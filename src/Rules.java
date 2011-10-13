@@ -1,6 +1,5 @@
 import java.util.Vector;
 
-
 public class Rules {
 	protected Board board;
 	protected Symbol ABOVE, UNDER, TOLEFT, TORIGHT;

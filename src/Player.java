@@ -1,6 +1,7 @@
 import java.util.HashSet;
 import java.util.PriorityQueue;
 import java.util.Stack;
+import java.util.LinkedList;
 import java.util.Vector;
 
 public class Player {
@@ -66,14 +67,15 @@ public class Player {
 		cutOffLimit = start.f = start.heuristic();
 		start.g = 0;
 
-		Stack<Board> stack = new Stack<Board>();
+		LinkedList<Board> stack = new LinkedList<Board>();
 		stack.push(start);
 
-		Stack<Board> next = new Stack<Board>();
+		PriorityQueue<Board> queue = new PriorityQueue<Board>();
 
 		visited = new HashSet<Integer>();
 
 		while (true) {
+			//System.out.println("cutoff: " + cutOffLimit + ", stack: "+ stack.size());
 			while (!stack.isEmpty()) {
 				Board board = stack.pop();
 
@@ -97,26 +99,28 @@ public class Player {
 						stack.push(succ);
 					}
 				} else {
-					next.push(board);
+					queue.add(board);
 				}
 			} // while stack has elements
 
-			if (next.isEmpty())
+			//System.out.println("queue: " + queue.size());
+
+			if (queue.isEmpty())
 				return "";
 
 			stack.clear();
 
 			// Calculate new cut off limit
 			cutOffLimit = Integer.MAX_VALUE;
-			for (Board b : next) {
+			for (Board b : queue) {
 				if (b.f < cutOffLimit)
 					cutOffLimit = b.f;
 
 				// Queue next candidates
-				stack.push(b);
+				stack.addLast(b);
 			}
 
-			next.clear();
+			queue.clear();
 		}
 	} // }}}
 
