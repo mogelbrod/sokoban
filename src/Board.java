@@ -91,7 +91,7 @@ public class Board implements Comparable<Board> {
 	 * Moves the player piece on this board, updating the position of it,
 	 * and any box it collides with.
 	 */
-	private void move(Direction dir) {
+	public void move(Direction dir) {
 		switch (cells[playerPos]) {
 			case PLAYER:
 				cells[playerPos] = Symbol.FLOOR;
@@ -272,12 +272,13 @@ public class Board implements Comparable<Board> {
 					}
 				}
 			}
+			h += d;
 
 			// Player distances
-			h += (cells[i] == Symbol.BOX_GOAL) ? d : Math.abs(i % width
-					- playerPos
-					% width)
-					+ Math.abs(i / width - playerPos / width) + d;
+			if (cells[i] != Symbol.BOX_GOAL) {
+				h += Math.abs(i % width - playerPos % width)
+				   + Math.abs(i / width - playerPos / width);
+			}
 		} // each box
 
 		return h;
