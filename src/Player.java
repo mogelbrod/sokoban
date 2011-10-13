@@ -38,7 +38,6 @@ public class Player {
 			// Examine successors to current board
 			for (Direction dir : board.findPossibleMoves()) {
 				Board succ = new Board(board, dir);
-				possible++;
 
 				if (visited(succ))
 					continue;

@@ -218,6 +218,9 @@ public class Board implements Comparable<Board> {
 		System.out.println(toString());
 	}
 
+	/**
+	 * Evaluates this board, returning a heuristic value seen as the cost of it.
+	 */
 	public int heuristic() {
 		int h = 0;
 
