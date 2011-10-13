@@ -1,5 +1,5 @@
 public enum Symbol {
-	WALL, PLAYER, PLAYER_GOAL, BOX, BOX_GOAL, GOAL, FLOOR;
+	WALL, PLAYER, PLAYER_GOAL, BOX, BOX_GOAL, GOAL, FLOOR, CORNER, PLAYER_CORNER;
 
 	public static Symbol fromChar(char c) {
 		switch (c) {
@@ -10,6 +10,7 @@ public enum Symbol {
 			case '*': return Symbol.BOX_GOAL;
 			case '.': return Symbol.GOAL;
 			case ' ': return Symbol.FLOOR;
+			case '_': return Symbol.CORNER;
 		}
 		return Symbol.WALL;
 	}
@@ -17,12 +18,14 @@ public enum Symbol {
 	public String toString() {
 		switch (this) {
 			case WALL: return "#";
+			case PLAYER_CORNER:
 			case PLAYER: return "@";
 			case PLAYER_GOAL: return "+";
 			case BOX: return "$";
 			case BOX_GOAL: return "*";
 			case GOAL: return ".";
 			case FLOOR: return " ";
+			case CORNER: return " ";
 		}
 		return "";
 	}
@@ -30,13 +33,15 @@ public enum Symbol {
 	public char toChar() {
 		switch (this) {
 			case WALL: return '#';
+			case PLAYER_CORNER:
 			case PLAYER: return '@';
 			case PLAYER_GOAL: return '+';
 			case BOX: return '$';
 			case BOX_GOAL: return '*';
 			case GOAL: return '.';
 			case FLOOR: return ' ';
+			case CORNER: return ' ';
 		}
-		return 0;
+		return ' ';
 	}
 }
