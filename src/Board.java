@@ -278,7 +278,7 @@ public class Board implements Comparable<Board> {
 
 			// Player distances
 			if (cells[i] != Symbol.BOX_GOAL) {
-				h += Math.abs(i % width - playerPos % width)
+				h += Math.abs(i % width - playerPos % width) + 2
 				   + Math.abs(i / width - playerPos / width);
 			}
 		} // each box
