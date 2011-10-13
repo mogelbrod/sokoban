@@ -3,12 +3,19 @@
 
   <property name="src.dir" location="src"/>
   <property name="classes.dir" location="bin"/>
+
+  <target name="compile" depends="init" description="compile the source">
+		<javac srcdir="${src.dir}" destdir="${classes.dir}"
+				encoding="utf8" includeantruntime="false" debug="on">
+			<compilerarg value="-Xlint"/>
+		</javac>
+  </target>
 	
 	<target name="run" depends="compile">
 		<java classname="${main-class}">
 			<arg value="130.237.218.85"/>
 			<arg value="7777"/>
-			<arg value="2"/>
+			<arg value="1"/>
 			<classpath location="${classes.dir}" path="${java.class.path}" />
 		</java>
 	</target>
@@ -16,13 +23,6 @@
   <target name="init" description="initialize build">
     <tstamp/>
     <mkdir dir="${classes.dir}"/>
-  </target>
-
-  <target name="compile" depends="init" description="compile the source">
-		<javac srcdir="${src.dir}" destdir="${classes.dir}"
-		       encoding="utf8" includeantruntime="false">
-			<compilerarg value="-Xlint"/>
-		</javac>
   </target>
 
   <target name="clean" depends="init" description="clean up">
