@@ -81,19 +81,19 @@ public class Board implements Comparable<Board> {
 	private void move(Direction dir) {
 		cells[playerPos] = (cells[playerPos] == Symbol.PLAYER_GOAL) ? Symbol.GOAL : Symbol.FLOOR;
 		
-		int newPlayerPos = translatePos(playerPos, dir);
-		int moveBoxToIndex = translatePos(newPlayerPos, dir);
+		int newPos = translatePos(playerPos, dir);
+		int dst = translatePos(newPos, dir);
 		
-		if (cells[newPlayerPos] == Symbol.BOX || cells[newPlayerPos] == Symbol.BOX_GOAL) {
-			cells[moveBoxToIndex] = (cells[moveBoxToIndex] == Symbol.GOAL) ? Symbol.BOX_GOAL : Symbol.BOX;
-			boxes.remove((Object) newPlayerPos);
-			boxes.add(moveBoxToIndex);
-			cells[newPlayerPos] = (cells[newPlayerPos] == Symbol.BOX) ? Symbol.PLAYER : Symbol.PLAYER_GOAL;
+		if (cells[newPos] == Symbol.BOX || cells[newPos] == Symbol.BOX_GOAL) {
+			cells[dst] = (cells[dst] == Symbol.GOAL) ? Symbol.BOX_GOAL : Symbol.BOX;
+			boxes.remove((Object) newPos);
+			boxes.add(dst);
+			cells[newPos] = (cells[newPos] == Symbol.BOX) ? Symbol.PLAYER : Symbol.PLAYER_GOAL;
 		} else {
-			cells[newPlayerPos] = (cells[newPlayerPos] == Symbol.GOAL) ? Symbol.PLAYER_GOAL : Symbol.PLAYER;
+			cells[newPos] = (cells[newPos] == Symbol.GOAL) ? Symbol.PLAYER_GOAL : Symbol.PLAYER;
 		}
 
-		playerPos = newPlayerPos;
+		playerPos = newPos;
 		path += dir.toString();
 	}
 
