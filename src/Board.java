@@ -1,4 +1,3 @@
-import java.util.HashSet;
 import java.util.Vector;
 
 public class Board implements Comparable<Board> {
@@ -15,6 +14,7 @@ public class Board implements Comparable<Board> {
 
 	// Current player position
 	protected int playerPos = -1;
+	private boolean movedBox;
 
 	/**
 	 * Create new board with a predefined layout.
@@ -59,7 +59,7 @@ public class Board implements Comparable<Board> {
 		this.playerPos = board.playerPos;
 		this.boxes = new Vector<Integer>(board.boxes);
 		this.goals = new Vector<Integer>(board.goals);
-		move(dir);
+		movedBox = move(dir);
 	}
 
 	/**
@@ -79,9 +79,10 @@ public class Board implements Comparable<Board> {
 	 * Moves the player piece on this board, updating the position of it,
 	 * and any box it collides with.
 	 */
-	private void move(Direction dir) {
+	private boolean move(Direction dir) {
 		cells[playerPos] = (cells[playerPos] == Symbol.PLAYER_GOAL) ? Symbol.GOAL : Symbol.FLOOR;
 		
+		boolean movedBox = false;
 		int newPos = translatePos(playerPos, dir);
 		int dst = translatePos(newPos, dir);
 		
@@ -89,6 +90,7 @@ public class Board implements Comparable<Board> {
 			cells[dst] = (cells[dst] == Symbol.GOAL) ? Symbol.BOX_GOAL : Symbol.BOX;
 			boxes.remove((Object) newPos);
 			boxes.add(dst);
+			movedBox = true;
 			cells[newPos] = (cells[newPos] == Symbol.BOX) ? Symbol.PLAYER : Symbol.PLAYER_GOAL;
 		} else {
 			cells[newPos] = (cells[newPos] == Symbol.GOAL) ? Symbol.PLAYER_GOAL : Symbol.PLAYER;
@@ -96,6 +98,7 @@ public class Board implements Comparable<Board> {
 
 		playerPos = newPos;
 		path += dir.toString();
+		return movedBox;
 	}
 
 	/**
@@ -218,31 +221,23 @@ public class Board implements Comparable<Board> {
 		System.out.println(toString());
 	}
 
+	private final Rules MASTER_CONTROL_TOWER = new Rules();
 	public int heuristic() {
 		int h = 0;
 
-		HashSet<Integer> foundGoals = new HashSet<Integer>();
+		if (movedBox)
+			if (!MASTER_CONTROL_TOWER.check(this))
+				return Integer.MAX_VALUE;
 		// BOX DISTANCES
-		for (int i : boxes) {
-			int d = -1;
-			for (int j : goals) {
-				int t = Math.abs(i % width - j % width)
-						+ Math.abs(i / width - j / width);
-				if (d == -1 && !foundGoals.contains(j)) {
-					d = t;
-					foundGoals.add(j);
-				} else {
-					if (d > t && !foundGoals.contains(j)) {
-						d = t;
-						foundGoals.add(j);
-					}
-				}
-			}
+		for (int i = 0; i < boxes.size(); i++) {
+			h += Math.abs(boxes.get(i) % width - goals.get(i) % width)
+					+ Math.abs(boxes.get(i) / width - goals.get(i) / width);
+
 			// PLAYER DISTANCES
-			h += (cells[i] == Symbol.BOX_GOAL) ? d : Math.abs(i % width
-					- playerPos
-					% width)
-					+ Math.abs(i / width - playerPos / width) + d;
+			h += (cells[i] == Symbol.BOX_GOAL) ? 0 : Math.abs(i % width
+					- playerPos % width)
+					+ Math.abs(i / width - playerPos / width);
+
 		}
 
 		return h;
