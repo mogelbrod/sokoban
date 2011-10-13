@@ -1,82 +1,72 @@
 import java.util.HashSet;
 import java.util.Stack;
 import java.util.Vector;
+import java.util.PriorityQueue;
 
 public class Player {
-
 	private Rules MASTER_CONTROL_TOWER = new Rules();
 	private HashSet<Integer> visited;
-	private Stack<Board> stack;
 
 	/**
-	 * New IDA* implementation. {{{
+	 * A* implementation. {{{
 	 */
-	public String idaStar(Board start) {
+	public String aStar(Board start) {
 		int cutOffLimit;
 
 		// Initialize starting board
 		cutOffLimit = start.f = start.heuristic();
 		start.g = 0;
 
-		Stack<Board> stack = new Stack<Board>();
-		stack.push(start);
-
-		Stack<Board> next = new Stack<Board>();
+		PriorityQueue<Board> queue = new PriorityQueue<Board>();
+		queue.add(start);
 
 		visited = new HashSet<Integer>();
 
-		while (true) {
-			while (!stack.isEmpty()) {
-				Board board = stack.pop();
-				//System.out.println("cutOff=" + cutOffLimit + ", f=" + board.f + ", g=" + board.g);
+		int possible = 0, queued = 0, examined = 0;
 
-				if (board.isWin())
-					return board.getPath();
+		while (!queue.isEmpty()) {
+			Board board = queue.poll();
+			examined++;
 
-				if (board.f <= cutOffLimit) {
-					visited(board);
-
-					// Examine successors to current board
-					for (Direction dir : board.findPossibleMoves()) {
-						Board succ = new Board(board, dir);
-
-						if (visited(succ))
-							continue;
-
-						succ.g = board.g + 1;
-						succ.f = succ.heuristic() + succ.g;
-						stack.push(succ);
-					}
-				} else {
-					next.push(board);
-				}
-			} // while stack has elements
-
-			if (next.isEmpty())
-				return "";
-
-			stack.clear();
-
-			// Calculate new cut off limit
-			cutOffLimit = Integer.MAX_VALUE;
-			for (Board b : next) {
-				if (b.f < cutOffLimit)
-					cutOffLimit = b.f;
-
-				// Queue next candidates
-				stack.push(b);
+			if (board.isWin()) {
+				System.out.println(
+						  "Examined: " + examined +
+						"\nQueued:   " + queued +
+						"\nPossible: " + possible
+				);
+				return board.getPath();
 			}
 
-			next.clear();
-		}
+			// Examine successors to current board
+			for (Direction dir : board.findPossibleMoves()) {
+				Board succ = new Board(board, dir);
+				possible++;
+
+				if (visited(succ))
+					continue;
+
+				possible++;
+				int h = succ.heuristic();
+				if (h == Integer.MAX_VALUE)
+					continue;
+
+				succ.g = board.g + 1;
+				succ.f = succ.g + h;
+				queue.add(succ);
+				queued++;
+			}
+		} // while queue has elements
+
+		return "";
 	} // }}}
 
 	/**
-	 * Original DFS implementation. {{{
+	 * DFS implementation. {{{
 	 */
 	public String dfs(Board startState) {
-		stack = new Stack<Board>();
+		Stack<Board> stack = new Stack<Board>();
 		stack.push(startState);
+
 		visited = new HashSet<Integer>();
 		visited(startState);
 
@@ -95,16 +85,13 @@ public class Player {
 				for (Direction d : moves) {
 					Board nextBoard = new Board(currentState, d);
 
-					if(!visited(nextBoard)){
+					if (!visited(nextBoard)){
 						noUnvisitedChildNodes = false;
-						if(MASTER_CONTROL_TOWER.check(nextBoard.cells, nextBoard.getWidth())){
+						if (MASTER_CONTROL_TOWER.check(nextBoard.cells, nextBoard.getWidth())){
 							stack.push(nextBoard);
 						}	
-
-
 					} 
 				}
-
 			} else {
 				stack.pop();
 			}
@@ -116,11 +103,9 @@ public class Player {
 
 	/**
 	 * Checks if a state has been visited before.
-	 * @param: hashCode of Board.cells.hashCode()
 	 * returns false iff not visited else true.
 	 */
 	private boolean visited(Board board) {
-		//.add returns true if hashCode was added (meaning hashCode haven't been added before)
 		return !visited.add(board.hashCode());
 	}
 }

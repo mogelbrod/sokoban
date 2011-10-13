@@ -39,7 +39,7 @@ public class Client {
 			board.write();
 
 			Player p = new Player();
-			String solution = p.idaStar(board);
+			String solution = p.aStar(board);
 
 			//send the solution to the server
 			System.out.println(solution);
