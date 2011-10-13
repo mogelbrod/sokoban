@@ -125,51 +125,6 @@ public class Player {
 	} // }}}
 
 	/**
-	 * DFS implementation. {{{
-	 */
-	public String dfs(Board startState) {
-		Rules MASTER_CONTROL_TOWER = new Rules();
-		Stack<Board> stack = new Stack<Board>();
-		stack.push(startState);
-
-		visited = new HashSet<Integer>();
-		visited(startState);
-
-		while (!stack.isEmpty()) {
-			Board currentState = stack.peek();
-
-			if (currentState.isWin()) {
-				System.out.println(currentState.path);
-				return currentState.path;
-			}
-
-			Vector<Direction> moves = currentState.findPossibleMoves();
-
-			boolean noUnvisitedChildNodes = true;
-			if (moves.size() != 0) {
-				for (Direction d : moves) {
-					Board nextBoard = new Board(currentState, d);
-
-					System.out.println(nextBoard.toString());
-					if (!visited(nextBoard)) {
-						noUnvisitedChildNodes = false;
-						if (MASTER_CONTROL_TOWER.check(nextBoard)) {
-							stack.push(nextBoard);
-						} else {
-							int a = 0;
-						}
-					} 
-				}
-			} else {
-				stack.pop();
-			}
-			if (noUnvisitedChildNodes)
-				stack.pop();
-		}
-		return null;
-	} // }}}
-
-	/**
 	 * Checks if a state has been visited before.
 	 * returns false iff not visited else true.
 	 */
