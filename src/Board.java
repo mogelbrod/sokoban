@@ -1,4 +1,3 @@
-import java.util.HashSet;
 import java.util.Vector;
 
 public class Board {
@@ -221,28 +220,15 @@ public class Board {
 	public int heuristic() {
 		int h = 0;
 
-		HashSet<Integer> foundGoals = new HashSet<Integer>();
 		// BOX DISTANCES
-		for (int i : boxes) {
-			int d = -1;
-			for (int j : goals) {
-				int t = Math.abs(i % width - j % width)
-						+ Math.abs(i / width - j / width);
-				if (d == -1 && !foundGoals.contains(j)) {
-					d = t;
-					foundGoals.add(j);
-				} else {
-					if (d > t && !foundGoals.contains(j)) {
-						d = t;
-						foundGoals.add(j);
-					}
-				}
-			}
+		for (int i = 0; i < boxes.size(); i++) {
+			h += Math.abs(boxes.get(i) % width - goals.get(i) % width)
+					+ Math.abs(boxes.get(i) / width - goals.get(i) / width);
+
 			// PLAYER DISTANCES
-			h += (cells[i] == Symbol.BOX_GOAL) ? d : Math.abs(i % width
-					- playerPos
-					% width)
-					+ Math.abs(i / width - playerPos / width) + d;
+			h += (cells[i] == Symbol.BOX_GOAL) ? 0 : Math.abs(i % width
+					- playerPos % width)
+					+ Math.abs(i / width - playerPos / width);
 		}
 
 		return h;
